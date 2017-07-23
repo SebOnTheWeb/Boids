@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "Scene.h"
 #include "BoidLogicHandler.h"
+#include "InputManager.h"
 
 #pragma comment(lib, "d3d11.lib")
 
@@ -20,6 +21,7 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 
 	//Init classes
 	Renderer renderer = Renderer(hwnd, hInstance, windowWidth, windowHeight);
+	InputManager inputManager = InputManager(&hInstance, &hwnd);
 	Scene scene = Scene(&renderer);
 	BoidLogicHandler boidLogic = BoidLogicHandler(&renderer);
 
@@ -37,6 +39,9 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 		boidLogic.SingleThreadUpdate(&scene, deltaTime);
 		//boidLogic.MultiThreadUpdate(scene, deltaTime);
 		//boidLogic.GPUUpdate(scene, deltaTime);
+		inputManager.Update();
+		scene.GetCamera().Update(0.01f, 0.001f, deltaTime, &inputManager);
+
 		renderer.Render(scene);
 		renderer.Present();
 	}

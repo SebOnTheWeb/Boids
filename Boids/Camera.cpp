@@ -1,5 +1,20 @@
 #include "Camera.h"
 
+//Helper functions
+glm::mat4 Camera::calculateOrientationMatrix() const {
+	glm::mat4 matrix = glm::transpose(glm::mat4(
+		glm::vec4(this->right, 0.0f),
+		glm::vec4(this->up, 0.0f),
+		glm::vec4(this->target, 0.0f),
+		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
+	));
+	return matrix;
+}
+
+glm::mat4 Camera::calculateViewMatrix() const {
+	return this->orientationMatrix * glm::translate(glm::mat4(), this->position);
+}
+
 //Constructors and deconstructors
 Camera::Camera() {
 	this->position = glm::vec3(0.0, 0.0, 0.0);
@@ -44,7 +59,37 @@ void Camera::SetTarget(const glm::vec3 &target) {
 
 //Functions
 void Camera::Update(float moveSpeed, float rotationSpeed, float deltaTime, InputManager* inputManager) {
-	//TODO: Update camera
+	glm::vec3 movement = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	//Update movement based on keys pressed
+	if (inputManager->KeyPressed('A')) {
+		movement -= this->right;
+	}
+	if (inputManager->KeyPressed('D')) {
+		movement += this->right;
+	}
+	if (inputManager->KeyPressed('W')) {
+		movement += this->target;
+	}
+	if (inputManager->KeyPressed('S')) {
+		movement -= this->target;
+	}
+
+	//Update rotation based on mouse movement
+	if (inputManager->MouseMoved()) {
+		glm::vec2 deltaMove = inputManager->MouseDeltaMovement();
+		rotation.x = deltaMove.x; // TODO: Update these values
+		rotation.y = deltaMove.y;
+	}
+	
+	this->position += movement * moveSpeed * deltaTime;
+	
+	Yaw(rotation.x);
+	Pitch(rotation.y);
+
+	this->orientationMatrix = calculateOrientationMatrix();
+	this->viewMatrix = calculateViewMatrix();
 }
 
 void Camera::Yaw(float rotation) {

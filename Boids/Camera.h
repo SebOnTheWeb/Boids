@@ -16,7 +16,14 @@ private:
 	float yaw;
 	float pitch;
 	float fieldOfView;
-	// TODO: Matrices
+
+	glm::mat4 orientationMatrix;
+	glm::mat4 viewMatrix;
+	glm::mat4 projectionMatrix;
+	
+	//Helper functions
+	glm::mat4 calculateOrientationMatrix() const;
+	glm::mat4 calculateViewMatrix() const;
 
 public:
 	//Constructors and deconstructors
@@ -29,7 +36,6 @@ public:
 	glm::vec3 GetTarget() const;
 	void SetPosition(const glm::vec3 &position);
 	void SetTarget(const glm::vec3 &target);
-	// TODO: Rest of camera functions
 
 	//Functions
 	void Update(float moveSpeed, float rotiationSpeed, float deltaTime, InputManager* inputManager);

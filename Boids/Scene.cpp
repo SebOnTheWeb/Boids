@@ -4,10 +4,12 @@
 //Constructiors and deconstructor
 Scene::Scene(Renderer* rendererPtr) {
 	for (int i = 0; i < NR_OF_BOIDS; i++) {
-		// TODO: Update boid positions to be spaced
-		this->boids[i] = Boid();
+		int x = BOID_SEPERATION; //TODO: Evenly divide across room
+		int y = BOID_SEPERATION;
+		int z = BOID_SEPERATION;
+		this->boids[i] = Boid(glm::vec3(x, y, z));
 	}
-	this->camera = Camera(100.0); // TODO: Don't use default constructor
+	this->camera = Camera(90.0);
 	this->rendererPtr = rendererPtr;
 	this->storageBuffers[0] = new StorageBuffer(rendererPtr); // TODO: Don't use default constructor
 	this->storageBuffers[1] = new StorageBuffer(rendererPtr); // TODO: Don't use default constructor

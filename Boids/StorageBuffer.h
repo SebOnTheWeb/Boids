@@ -8,6 +8,7 @@ private:
 
 public:
 	//Construtor and deonstructor
+	StorageBuffer();
 	StorageBuffer(Renderer* rendererPtr);
 	~StorageBuffer();
 };

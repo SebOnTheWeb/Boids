@@ -7,7 +7,9 @@
 
 class Renderer;
 
-const unsigned int NR_OF_BOIDS = 1000;
+const unsigned int NR_OF_BOIDS = 1000; //Must be dividable by 10
+const float BOID_SEPERATION = 5.0f;
+
 
 class Scene {
 private:

@@ -3,10 +3,12 @@
 #include <windows.h>
 #include <d3d11.h>
 #include <stdexcept>
+#include <d3dcompiler.h>
 
 #include "Scene.h"
 
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "D3DCompiler.lib")
 
 class Renderer {
 private:
@@ -20,6 +22,10 @@ private:
 	ID3D11Texture2D* backBufferTexture;
 	ID3D11SamplerState* samplerState;
 	ID3D11RasterizerState* rasterizerState;
+
+	ID3D11VertexShader* vertexShader;
+	ID3D11GeometryShader* geometryShader;
+	ID3D11PixelShader* pixelShader;
 
 	unsigned int windowWidth;
 	unsigned int windowHeight;

@@ -52,6 +52,58 @@ void Renderer::InitD3D11() {
 
 	//Bind viewport
 	this->dxDeviceContext->RSSetViewports(1, &viewPort);
+
+	//Init shaders
+	ID3DBlob* shaderBlob;
+	ID3DBlob* errorBlob;
+
+	//Vertex shader
+	hr = D3DCompileFromFile(L"Default_VS.hlsl",
+		nullptr,
+		nullptr,
+		"main",
+		"vs_5_0",
+		0,
+		0,
+		&shaderBlob,
+		&errorBlob);
+
+	hr = this->dxDevice->CreateVertexShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		nullptr,
+		&this->vertexShader);
+
+	//Geometry shader
+	hr = D3DCompileFromFile(L"Default_GS.hlsl",
+		nullptr,
+		nullptr,
+		"main",
+		"gs_5_0",
+		0,
+		0,
+		&shaderBlob,
+		&errorBlob);
+
+	hr = this->dxDevice->CreateGeometryShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		nullptr,
+		&this->geometryShader);
+
+	//Pixel shader
+	hr = D3DCompileFromFile(L"Default_PS.hlsl",
+		nullptr,
+		nullptr,
+		"main",
+		"ps_5_0",
+		0,
+		0,
+		&shaderBlob,
+		&errorBlob);
+
+	hr = this->dxDevice->CreatePixelShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		nullptr,
+		&this->pixelShader);
 }
 
 
@@ -91,7 +143,35 @@ void Renderer::Render(const Scene &scene) {
 	dxDeviceContext->ClearRenderTargetView(this->renderTargetView, clearColor);
 
 	// TODO: Render using scene
+	this->dxDeviceContext->VSSetShader(this->vertexShader,
+		nullptr,
+		0);
+	this->dxDeviceContext->GSSetShader(this->geometryShader,
+		nullptr,
+		0);
+	this->dxDeviceContext->PSSetShader(this->pixelShader,
+		nullptr,
+		0);
 
+	this->dxDeviceContext->IASetPrimitiveTopology(
+		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
+	//TODO: Set blendState
+
+	this->dxDeviceContext->OMSetRenderTargets(1,
+		&this->renderTargetView,
+		nullptr); //TODO: Set depthStencilView
+
+	//Set shader resources
+
+	this->dxDeviceContext->Draw(3, 0);
+	
+	//Unset shaders
+	this->dxDeviceContext->VSSetShader(nullptr, nullptr, 0);
+	this->dxDeviceContext->GSSetShader(nullptr, nullptr, 0);
+	this->dxDeviceContext->PSSetShader(nullptr, nullptr, 0);
+
+	//Unset blendState
 }
 
 void Renderer::Present() {
