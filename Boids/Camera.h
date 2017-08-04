@@ -17,23 +17,24 @@ private:
 	float pitch;
 	float fieldOfView;
 
-	glm::mat4 orientationMatrix;
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;
 	
 	//Helper functions
-	glm::mat4 calculateOrientationMatrix() const;
-	glm::mat4 calculateViewMatrix() const;
+	glm::mat4 CalculateViewMatrix() const;
+	glm::mat4 CalculateWorldMatrix() const;
 
 public:
 	//Constructors and deconstructors
 	Camera();
-	Camera(float fieldOfView);
+	Camera(float fieldOfView, int width, int height);
 	~Camera();
 
 	//Getters and setters
 	glm::vec3 GetPosition() const;
 	glm::vec3 GetTarget() const;
+	glm::mat4 GetViewMatrix() const;
+	glm::mat4 GetProjectionMatrix() const;
 	void SetPosition(const glm::vec3 &position);
 	void SetTarget(const glm::vec3 &target);
 

@@ -1,3 +1,8 @@
+#define _CRTDBG_MAP_ALLOC  
+#include <stdlib.h>  
+#include <crtdbg.h>
+#include <chrono>
+
 #include <windows.h>
 #include <d3d11.h>
 
@@ -14,6 +19,8 @@ HWND CreateShowWindow(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow, int win
 
 INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	unsigned int windowWidth = 800;
 	unsigned int windowHeight = 600;
 
@@ -21,10 +28,12 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 
 	//Init classes
 	Renderer renderer = Renderer(hwnd, hInstance, windowWidth, windowHeight);
-	InputManager inputManager = InputManager(&hInstance, &hwnd);
+	InputManager* inputManager = new InputManager(&hInstance, &hwnd, windowWidth, windowHeight);
 	Scene scene = Scene(&renderer);
 	BoidLogicHandler boidLogic = BoidLogicHandler(&renderer);
 
+	//Init timer
+	double time = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
 	// Run the message loop.
 	MSG msg = {};
@@ -34,13 +43,16 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 
-		float deltaTime = 0.0f;
+		double previousFrameTime = time;
+		time = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+		float deltaTime = (time - previousFrameTime) / 1000000000;
 
 		boidLogic.SingleThreadUpdate(&scene, deltaTime);
 		//boidLogic.MultiThreadUpdate(scene, deltaTime);
 		//boidLogic.GPUUpdate(scene, deltaTime);
-		inputManager.Update();
-		scene.GetCamera().Update(0.01f, 0.001f, deltaTime, &inputManager);
+		inputManager->Update();
+		scene.GetCamera()->Update(0.1f, 0.1f, deltaTime, inputManager);
 
 		renderer.Render(scene);
 		renderer.Present();
@@ -62,7 +74,7 @@ HWND CreateShowWindow(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow, int win
 	RegisterClass(&wc);
 
 	//Create the window.
-	HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Window Display Name",
+	HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"Boids",
 		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, windowWidth,
 		windowHeight, NULL, NULL, hInstance, NULL);
 

@@ -6,6 +6,7 @@
 #include <d3dcompiler.h>
 
 #include "Scene.h"
+#include "StorageBuffer.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -22,6 +23,8 @@ private:
 	ID3D11Texture2D* backBufferTexture;
 	ID3D11SamplerState* samplerState;
 	ID3D11RasterizerState* rasterizerState;
+
+	StorageBuffer* metaDataBufferPtr;
 
 	ID3D11VertexShader* vertexShader;
 	ID3D11GeometryShader* geometryShader;
@@ -42,8 +45,10 @@ public:
 	//Getters and setters
 	ID3D11Device* GetDxDevice();
 	ID3D11DeviceContext* GetDxDeviceContext();
+	unsigned int GetWindowWidth() const;
+	unsigned int GetWindowHeight() const;
 
 	//Functions
-	void Render(const Scene &scene);
+	void Render(Scene &scene);
 	void Present();
 };

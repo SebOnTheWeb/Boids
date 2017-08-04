@@ -7,54 +7,105 @@ InputManager::InputManager() {
 	this->mouse = nullptr;
 }
 
-InputManager::InputManager(HINSTANCE* hInstance, HWND* hwnd) {
+InputManager::InputManager(HINSTANCE* hInstance, HWND* hwnd, int windowWidth, int windowHeight) {
 	this->input = nullptr;
 	this->keyboard = nullptr;
 	this->mouse = nullptr;
 
-	DirectInput8Create(*hInstance,
+	HRESULT hr = DirectInput8Create(*hInstance,
 		DIRECTINPUT_VERSION,
 		IID_IDirectInput8,
 		(void**)&this->input,
 		NULL);
+	assert(hr == S_OK);
 
 	//Init keyboard 
-	input->CreateDevice(GUID_SysKeyboard,
+	hr = input->CreateDevice(GUID_SysKeyboard,
 		&this->keyboard,
 		NULL);
+	assert(hr == S_OK);
 
-	this->keyboard->SetDataFormat(&c_dfDIKeyboard);
-	this->keyboard->SetCooperativeLevel(*hwnd, DISCL_FOREGROUND);
+	hr = this->keyboard->SetDataFormat(&c_dfDIKeyboard);
+	assert(hr == S_OK);
+
+	hr = this->keyboard->SetCooperativeLevel(*hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	assert(hr == S_OK);
+
+	hr = this->keyboard->Acquire();
+	assert(hr == S_OK);
 
 	//Init mouse
-	input->CreateDevice(GUID_SysMouse,
+	hr = input->CreateDevice(GUID_SysMouse,
 		&this->mouse,
 		NULL);
+	assert(hr == S_OK);
 
-	this->mouse->SetDataFormat(&c_dfDIMouse);
-	this->mouse->SetCooperativeLevel(*hwnd,
+	hr = this->mouse->SetDataFormat(&c_dfDIMouse);
+	assert(hr == S_OK);
+
+	hr = this->mouse->SetCooperativeLevel(*hwnd,
 		DISCL_EXCLUSIVE | DISCL_NOWINKEY | DISCL_FOREGROUND);
+	assert(hr == S_OK);
+
+	hr = this->mouse->Acquire();
+	assert(hr == S_OK);
+
+	this->mousePosX = 0;
+	this->mousePosY = 0;
+
+	this->windowWidth = windowWidth;
+	this->windowHeight = windowHeight;
 }
 
 InputManager::~InputManager() {
 	keyboard->Unacquire();
+	keyboard->Release();
+	keyboard = nullptr;
 	mouse->Unacquire();
+	mouse->Release();
+	mouse = nullptr;
 	input->Release();
+	input = nullptr;
 }
 
 //Functions
 void InputManager::Update() {
+	HRESULT hr;
+
 	//Update keyboard state
-	this->keyboard->Acquire();
-	this->keyboard->GetDeviceState(sizeof(this->keyboardCurrentState),
+	hr = this->keyboard->GetDeviceState(sizeof(this->keyboardCurrentState),
 		(LPVOID)&this->keyboardCurrentState);
 
-	//Update mouse state
-	this->mouseLastState = this->mouseCurrentState;
+	//Try to regain state if lost
+	if (FAILED(hr)) {
+		if (hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED) {
+			this->keyboard->Acquire();
+		}
+		else {
+			assert(hr == S_OK); // Kind of ugly but hey :)
+		}
+	}
 
-	this->mouse->Acquire();
+	//Update mouse state
 	this->mouse->GetDeviceState(sizeof(DIMOUSESTATE),
-		&this->mouseCurrentState);
+		(LPVOID)&this->mouseState);
+
+	//Try to regain state if lost
+	if (FAILED(hr)) {
+		if (hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED) {
+			this->mouse->Acquire();
+		}
+		else {
+			assert(hr == S_OK); // Kind of ugly but hey :)
+		}
+	}
+
+	this->mousePosX += this->mouseState.lX;
+	this->mousePosY += this->mouseState.lY;
+	if (this->mousePosX < 0) { this->mousePosX = 0; }
+	if (this->mousePosY < 0) { this->mousePosY = 0; }
+	if (this->mousePosX > this->windowWidth) { this->mousePosX = this->windowWidth; }
+	if (this->mousePosY < this->windowHeight) { this->mousePosY = this->windowHeight; }
 }
 
 bool InputManager::KeyPressed(char key) {
@@ -92,13 +143,13 @@ bool InputManager::KeyPressed(char key) {
 }
 
 bool InputManager::MouseMoved() {
-	return (this->mouseCurrentState.lX != this->mouseLastState.lX
-		|| this->mouseCurrentState.lY != this->mouseLastState.lY);
+	return ((this->mouseState.lX != 0)
+		|| (this->mouseState.lY != 0));
 }
 
 glm::vec2 InputManager::MouseDeltaMovement() {
 	glm::vec2 result = glm::vec2(0.0f, 0.0f);
-	result.x = this->mouseLastState.lX - this->mouseCurrentState.lX;
-	result.y = this->mouseLastState.lY - this->mouseCurrentState.lY;
+	result.x = this->mouseState.lX;
+	result.y = this->mouseState.lY;
 	return result;
 }

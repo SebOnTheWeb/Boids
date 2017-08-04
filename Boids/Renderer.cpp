@@ -113,6 +113,9 @@ void Renderer::DeInitD3D11() {
 	this->swapChain->Release();
 	this->dxDeviceContext->Release();
 	this->dxDevice->Release();
+	this->vertexShader->Release();
+	this->geometryShader->Release();
+	this->pixelShader->Release();
 }
 
 //Constructors and deconstructor
@@ -122,10 +125,13 @@ Renderer::Renderer(HWND hwnd, HINSTANCE hInstance, unsigned int windowWidth, uns
 	this->hwnd = hwnd;
 
 	InitD3D11();
+	this->metaDataBufferPtr = new StorageBuffer(this, 1, sizeof(glm::mat4));
 }
 
 Renderer::~Renderer() {
 	DeInitD3D11();
+	delete this->metaDataBufferPtr;
+	this->metaDataBufferPtr = nullptr;
 }
 
 //Getters and setters
@@ -137,12 +143,28 @@ ID3D11DeviceContext* Renderer::GetDxDeviceContext() {
 	return this->dxDeviceContext;
 }
 
+unsigned int Renderer::GetWindowWidth() const {
+	return this->windowWidth;
+}
+
+unsigned int Renderer::GetWindowHeight() const {
+	return this->windowHeight;
+}
+
 //Functions
-void Renderer::Render(const Scene &scene) {
+void Renderer::Render(Scene &scene) {
 	float clearColor[4] = { 1, 0, 0, 1 };
 	dxDeviceContext->ClearRenderTargetView(this->renderTargetView, clearColor);
 
-	// TODO: Render using scene
+	glm::mat4 viewProjection = glm::transpose(
+		scene.GetCamera()->GetProjectionMatrix() * scene.GetCamera()->GetViewMatrix());
+	this->metaDataBufferPtr->SetData(&viewProjection, sizeof(glm::mat4));
+
+	//Set shader resources
+	ID3D11ShaderResourceView* srvs[] = { metaDataBufferPtr->GetShaderResourceView() };
+	this->dxDeviceContext->VSSetShaderResources(0, 1, srvs);
+
+	//Set shaders
 	this->dxDeviceContext->VSSetShader(this->vertexShader,
 		nullptr,
 		0);
@@ -161,8 +183,6 @@ void Renderer::Render(const Scene &scene) {
 	this->dxDeviceContext->OMSetRenderTargets(1,
 		&this->renderTargetView,
 		nullptr); //TODO: Set depthStencilView
-
-	//Set shader resources
 
 	this->dxDeviceContext->Draw(3, 0);
 	

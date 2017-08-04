@@ -26,6 +26,6 @@ public:
 
 	//Getters and setters
 	Boid GetBoid(unsigned int index) const;
-	Camera GetCamera() const;
+	Camera* GetCamera();
 	StorageBuffer* GetStorageBuffer(unsigned int index) const;
 };

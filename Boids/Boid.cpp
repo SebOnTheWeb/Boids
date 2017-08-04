@@ -26,24 +26,12 @@ glm::vec3 Boid::GetVelocity() const {
 	return this->velocity;
 }
 
-glm::vec3* Boid::GetNearestNeighbors() {
-	return this->nearestNeighbors;
-}
-
-int Boid::GetNrOfNearestNeighbors() const {
-	return this->nrOfNearestNeighbors;
-}
-
 void Boid::SetPosition(const glm::vec3 &position) {
 	this->position = position;
 }
 
 void Boid::SetVelocity(const glm::vec3 &velocity) {
 	this->velocity = velocity;
-}
-
-void Boid::SetNrOfNearestNeighbors(const int & nrOfNearestNeighbors) {
-	this->nrOfNearestNeighbors = nrOfNearestNeighbors;
 }
 
 //Functions

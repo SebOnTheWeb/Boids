@@ -1,39 +1,42 @@
 #include "Camera.h"
 
 //Helper functions
-glm::mat4 Camera::calculateOrientationMatrix() const {
+glm::mat4 Camera::CalculateViewMatrix() const {
 	glm::mat4 matrix = glm::transpose(glm::mat4(
 		glm::vec4(this->right, 0.0f),
 		glm::vec4(this->up, 0.0f),
 		glm::vec4(this->target, 0.0f),
 		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
 	));
-	return matrix;
-}
 
-glm::mat4 Camera::calculateViewMatrix() const {
-	return this->orientationMatrix * glm::translate(glm::mat4(), this->position);
+	return matrix * glm::translate(glm::mat4(), -this->position);
 }
 
 //Constructors and deconstructors
 Camera::Camera() {
-	this->position = glm::vec3(0.0, 0.0, 0.0);
+	this->position = glm::vec3(0.0, 0.0, -1.0);
 	this->target = glm::vec3(0.0, 0.0, 1.0);
-	this->up = glm::vec3(1.0, 0.0, 0.0);
-	this->right = glm::vec3(0.0, 1.0, 0.0);
+	this->up = glm::vec3(0.0, 1.0, 0.0);
+	this->right = glm::vec3(1.0, 0.0, 0.0);
 	this->yaw = 0.0f;
 	this->pitch = 0.0f;
 	this->fieldOfView = 90.0f;
 }
 
-Camera::Camera(float fieldOfView) {
-	this->position = glm::vec3(0.0, 0.0, 0.0);
+Camera::Camera(float fieldOfView, int width, int height) {
+	this->position = glm::vec3(0.0, 0.0, -1.0);
 	this->target = glm::vec3(0.0, 0.0, 1.0);
-	this->up = glm::vec3(1.0, 0.0, 0.0);
-	this->right = glm::vec3(0.0, 1.0, 0.0);
+	this->up = glm::vec3(0.0, 1.0, 0.0);
+	this->right = glm::vec3(1.0, 0.0, 0.0);
 	this->yaw = 0.0f;
 	this->pitch = 0.0f;
 	this->fieldOfView = fieldOfView;
+
+	this->projectionMatrix = glm::perspectiveFovLH(glm::radians(this->fieldOfView),
+		(float)width,
+		(float)height,
+		0.001f,
+		100.0f);
 }
 
 Camera::~Camera() {
@@ -47,6 +50,14 @@ glm::vec3 Camera::GetPosition() const {
 
 glm::vec3 Camera::GetTarget() const {
 	return this->target;
+}
+
+glm::mat4 Camera::GetViewMatrix() const {
+	return this->viewMatrix;
+}
+
+glm::mat4 Camera::GetProjectionMatrix() const {
+	return this->projectionMatrix;
 }
 
 void Camera::SetPosition(const glm::vec3 &position) {
@@ -79,8 +90,8 @@ void Camera::Update(float moveSpeed, float rotationSpeed, float deltaTime, Input
 	//Update rotation based on mouse movement
 	if (inputManager->MouseMoved()) {
 		glm::vec2 deltaMove = inputManager->MouseDeltaMovement();
-		rotation.x = deltaMove.x; // TODO: Update these values
-		rotation.y = deltaMove.y;
+		rotation.x = deltaMove.x * deltaTime * rotationSpeed; 
+		rotation.y = deltaMove.y * deltaTime * rotationSpeed;
 	}
 	
 	this->position += movement * moveSpeed * deltaTime;
@@ -88,8 +99,7 @@ void Camera::Update(float moveSpeed, float rotationSpeed, float deltaTime, Input
 	Yaw(rotation.x);
 	Pitch(rotation.y);
 
-	this->orientationMatrix = calculateOrientationMatrix();
-	this->viewMatrix = calculateViewMatrix();
+	this->viewMatrix = CalculateViewMatrix();
 }
 
 void Camera::Yaw(float rotation) {
