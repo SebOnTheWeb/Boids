@@ -7,15 +7,16 @@
 
 class Renderer;
 
-const unsigned int NR_OF_BOIDS = 1000; //Must be dividable by 10
-const float BOID_SEPERATION = 5.0f;
+const unsigned int NR_OF_BOIDS = 10; //Must be dividable by 10
+const float BOID_SEPERATION = 2.0f;
 
 
 class Scene {
 private:
-	Boid boids [NR_OF_BOIDS];
+	Boid boidsPrevious[NR_OF_BOIDS];
+	Boid boids[NR_OF_BOIDS];
 	Camera camera;
-	StorageBuffer* storageBuffers [2];
+	StorageBuffer* storageBuffers[2];
 
 	Renderer* rendererPtr;
 
@@ -26,6 +27,7 @@ public:
 
 	//Getters and setters
 	Boid GetBoid(unsigned int index) const;
+	Boid* GetAllBoids();
 	Camera* GetCamera();
 	StorageBuffer* GetStorageBuffer(unsigned int index) const;
 };

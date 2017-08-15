@@ -18,18 +18,14 @@ Camera::Camera() {
 	this->target = glm::vec3(0.0, 0.0, 1.0);
 	this->up = glm::vec3(0.0, 1.0, 0.0);
 	this->right = glm::vec3(1.0, 0.0, 0.0);
-	this->yaw = 0.0f;
-	this->pitch = 0.0f;
 	this->fieldOfView = 90.0f;
 }
 
 Camera::Camera(float fieldOfView, int width, int height) {
-	this->position = glm::vec3(0.0, 0.0, -1.0);
+	this->position = glm::vec3(0.0, 1.0, -2.0);
 	this->target = glm::vec3(0.0, 0.0, 1.0);
 	this->up = glm::vec3(0.0, 1.0, 0.0);
 	this->right = glm::vec3(1.0, 0.0, 0.0);
-	this->yaw = 0.0f;
-	this->pitch = 0.0f;
 	this->fieldOfView = fieldOfView;
 
 	this->projectionMatrix = glm::perspectiveFovLH(glm::radians(this->fieldOfView),
@@ -74,30 +70,38 @@ void Camera::Update(float moveSpeed, float rotationSpeed, float deltaTime, Input
 	glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	//Update movement based on keys pressed
-	if (inputManager->KeyPressed('A')) {
+	if (inputManager->KeyPressed(0x41)) { // A
 		movement -= this->right;
 	}
-	if (inputManager->KeyPressed('D')) {
+	if (inputManager->KeyPressed(0x44)) { // D
 		movement += this->right;
 	}
-	if (inputManager->KeyPressed('W')) {
+	if (inputManager->KeyPressed(0x57)) { // W
 		movement += this->target;
 	}
-	if (inputManager->KeyPressed('S')) {
+	if (inputManager->KeyPressed(0x53)) { // S
 		movement -= this->target;
 	}
 
-	//Update rotation based on mouse movement
-	if (inputManager->MouseMoved()) {
+	//TODO: Fix camera roation being laggy
+	//Update rotation based on mouse movement and keys pressed
+	if (inputManager->KeyPressed(VK_RBUTTON)) { // TODO: Left click
 		glm::vec2 deltaMove = inputManager->MouseDeltaMovement();
 		rotation.x = deltaMove.x * deltaTime * rotationSpeed; 
 		rotation.y = deltaMove.y * deltaTime * rotationSpeed;
+	}
+	if (inputManager->KeyPressed(0x51)) { // Q
+		rotation.z = deltaTime * rotationSpeed;
+	}
+	if (inputManager->KeyPressed(0x45)) { // E
+		rotation.z = deltaTime * -rotationSpeed;
 	}
 	
 	this->position += movement * moveSpeed * deltaTime;
 	
 	Yaw(rotation.x);
 	Pitch(rotation.y);
+	Roll(rotation.z);
 
 	this->viewMatrix = CalculateViewMatrix();
 }
@@ -111,5 +115,11 @@ void Camera::Yaw(float rotation) {
 void Camera::Pitch(float rotation) {
 	glm::quat quaternion = glm::angleAxis(glm::radians(rotation), right);
 	this->target = glm::normalize(quaternion * target);
+	this->up = glm::normalize(quaternion * up);
+}
+
+void Camera::Roll(float rotation) {
+	glm::quat quaternion = glm::angleAxis(glm::radians(rotation), target);
+	this->right = glm::normalize(quaternion * right);
 	this->up = glm::normalize(quaternion * up);
 }

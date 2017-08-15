@@ -119,7 +119,7 @@ void Renderer::DeInitD3D11() {
 }
 
 //Constructors and deconstructor
-Renderer::Renderer(HWND hwnd, HINSTANCE hInstance, unsigned int windowWidth, unsigned int windowHeight) {
+Renderer::Renderer(HWND hwnd, unsigned int windowWidth, unsigned int windowHeight) {
 	this->windowWidth = windowWidth;
 	this->windowHeight = windowHeight;
 	this->hwnd = hwnd;
@@ -153,16 +153,19 @@ unsigned int Renderer::GetWindowHeight() const {
 
 //Functions
 void Renderer::Render(Scene &scene) {
-	float clearColor[4] = { 1, 0, 0, 1 };
+	float clearColor[4] = { 1, 1, 1, 1 };
 	dxDeviceContext->ClearRenderTargetView(this->renderTargetView, clearColor);
 
 	glm::mat4 viewProjection = glm::transpose(
 		scene.GetCamera()->GetProjectionMatrix() * scene.GetCamera()->GetViewMatrix());
 	this->metaDataBufferPtr->SetData(&viewProjection, sizeof(glm::mat4));
 
+
 	//Set shader resources
-	ID3D11ShaderResourceView* srvs[] = { metaDataBufferPtr->GetShaderResourceView() };
-	this->dxDeviceContext->VSSetShaderResources(0, 1, srvs);
+	ID3D11ShaderResourceView* VSsrvs[] = { scene.GetStorageBuffer(0)->GetShaderResourceView() };
+	this->dxDeviceContext->VSSetShaderResources(0, 1, VSsrvs);
+	ID3D11ShaderResourceView* GSsrvs[] = { metaDataBufferPtr->GetShaderResourceView() };
+	this->dxDeviceContext->GSSetShaderResources(0, 1, GSsrvs);
 
 	//Set shaders
 	this->dxDeviceContext->VSSetShader(this->vertexShader,
@@ -176,7 +179,7 @@ void Renderer::Render(Scene &scene) {
 		0);
 
 	this->dxDeviceContext->IASetPrimitiveTopology(
-		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	
 	//TODO: Set blendState
 
@@ -184,7 +187,7 @@ void Renderer::Render(Scene &scene) {
 		&this->renderTargetView,
 		nullptr); //TODO: Set depthStencilView
 
-	this->dxDeviceContext->Draw(3, 0);
+	this->dxDeviceContext->Draw(NR_OF_BOIDS, 0);
 	
 	//Unset shaders
 	this->dxDeviceContext->VSSetShader(nullptr, nullptr, 0);

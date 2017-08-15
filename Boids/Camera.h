@@ -13,8 +13,6 @@ private:
 	glm::vec3 target;
 	glm::vec3 up;
 	glm::vec3 right;
-	float yaw;
-	float pitch;
 	float fieldOfView;
 
 	glm::mat4 viewMatrix;
@@ -42,4 +40,5 @@ public:
 	void Update(float moveSpeed, float rotiationSpeed, float deltaTime, InputManager* inputManager);
 	void Yaw(float rotation);
 	void Pitch(float rotation);
+	void Roll(float rotation);
 };

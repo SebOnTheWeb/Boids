@@ -39,7 +39,7 @@ private:
 
 public:
 	//Constructor and deconstructor
-	Renderer(HWND hwnd, HINSTANCE hInastance, unsigned int windowWidth = 800, unsigned int windowHeight = 600);
+	Renderer(HWND hwnd, unsigned int windowWidth = 800, unsigned int windowHeight = 600);
 	~Renderer();
 
 	//Getters and setters
