@@ -83,7 +83,7 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 		}
 
 		//Update camera
-		scene.GetCamera()->Update(2.0f, 20.0f, deltaTime, inputManager);
+		scene.GetCamera()->Update(2.0f, 40.0f, deltaTime, inputManager);
 
 		//Render
 		renderer.Render(scene);

@@ -9,6 +9,8 @@ void Renderer::InitD3D11() {
 	this->swapChain = nullptr;
 	this->renderTargetView = nullptr;
 	this->backBufferTexture = nullptr;
+	this->depthStencilView = nullptr;
+	this->depthBufferTexture = nullptr;
 	D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_HARDWARE;
 	D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_11_0;
 	D3D11_VIEWPORT viewPort;
@@ -64,7 +66,7 @@ void Renderer::InitD3D11() {
 
 	this->dxDevice->CreateRenderTargetView(this->backBufferTexture, nullptr, &this->renderTargetView);
 
-	//Bind renderTargetView TODO: And depth
+	//Bind renderTargetView
 	this->dxDeviceContext->OMSetRenderTargets(1, &this->renderTargetView, this->depthStencilView);
 
 	//Create viewport

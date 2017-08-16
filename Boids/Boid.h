@@ -6,6 +6,7 @@ class Boid {
 private:
 	glm::vec3 position;
 	glm::vec3 velocity;
+	glm::vec3 up;
 
 public:
 	//Constructors and deconstructor
@@ -18,6 +19,4 @@ public:
 	glm::vec3 GetVelocity() const;
 	void SetPosition(const glm::vec3 &position);
 	void SetVelocity(const glm::vec3 &velocity);
-
-	//Functions
 };
