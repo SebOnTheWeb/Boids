@@ -90,6 +90,9 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 		renderer.Present();
 	}
 
+	delete inputManager;
+	inputManager = nullptr;
+
 	return 0;
 }
 

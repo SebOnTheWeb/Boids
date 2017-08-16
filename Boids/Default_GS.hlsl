@@ -17,7 +17,7 @@ void main(point Boid input[1],
 	float4x4 viewProjectionMatrix = viewProjectionBuffer[0];
 
 	float3 front = normalize(input[0].velocity);
-	float3 up = float3(0.0f, 1.0f, 0.0f); //TODO: Fix world matrix
+	float3 up = float3(0.0f, 0.0f, -1.0f); //TODO: Fix world matrix
 	float3 right = -cross(front, up);
 
 	for (uint i = 0; i < 3; i++)

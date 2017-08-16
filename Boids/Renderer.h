@@ -21,6 +21,8 @@ private:
 	IDXGISwapChain* swapChain;
 	ID3D11RenderTargetView* renderTargetView;
 	ID3D11Texture2D* backBufferTexture;
+	ID3D11DepthStencilView* depthStencilView;
+	ID3D11Texture2D* depthBufferTexture;
 	ID3D11SamplerState* samplerState;
 	ID3D11RasterizerState* rasterizerState;
 

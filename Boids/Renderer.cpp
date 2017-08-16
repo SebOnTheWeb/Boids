@@ -33,14 +33,39 @@ void Renderer::InitD3D11() {
 		createDeviceFlags, &featureLevel, 1, D3D11_SDK_VERSION, &swapChainDesc,
 		&this->swapChain, &this->dxDevice, NULL, &this->dxDeviceContext);
 
+	//Create depthStencilView
+	D3D11_TEXTURE2D_DESC depthTextureDesc;
+	ZeroMemory(&depthTextureDesc, sizeof(depthTextureDesc));
+	depthTextureDesc.Width = this->windowWidth;
+	depthTextureDesc.Height = this->windowHeight;
+	depthTextureDesc.MipLevels = 1;
+	depthTextureDesc.ArraySize = 1;
+	depthTextureDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+	depthTextureDesc.SampleDesc.Count = 1;
+	depthTextureDesc.SampleDesc.Quality = 0;
+	depthTextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthTextureDesc.CPUAccessFlags = 0;
+	depthTextureDesc.MiscFlags = 0;
+
+	this->dxDevice->CreateTexture2D(&depthTextureDesc, nullptr, &depthBufferTexture);
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
+	ZeroMemory(&dsvDesc, sizeof(dsvDesc));
+	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	dsvDesc.Texture2D.MipSlice = 0;
+
+	this->dxDevice->CreateDepthStencilView(this->depthBufferTexture, &dsvDesc, &this->depthStencilView);
+
 	//Create renderTargetView
 	swapChain->GetBuffer(NULL, __uuidof(ID3D11Texture2D),
-		reinterpret_cast<void**>(&backBufferTexture));
+		reinterpret_cast<void**>(&this->backBufferTexture));
 
-	this->dxDevice->CreateRenderTargetView(backBufferTexture, nullptr, &renderTargetView);
+	this->dxDevice->CreateRenderTargetView(this->backBufferTexture, nullptr, &this->renderTargetView);
 
-	//Bind renderTargetView
-	this->dxDeviceContext->OMSetRenderTargets(1, &renderTargetView, nullptr);
+	//Bind renderTargetView TODO: And depth
+	this->dxDeviceContext->OMSetRenderTargets(1, &this->renderTargetView, this->depthStencilView);
 
 	//Create viewport
 	viewPort.Width = static_cast<float>(this->windowWidth);
@@ -108,6 +133,8 @@ void Renderer::InitD3D11() {
 
 
 void Renderer::DeInitD3D11() {
+	this->depthBufferTexture->Release();
+	this->depthStencilView->Release();
 	this->backBufferTexture->Release();
 	this->renderTargetView->Release();
 	this->swapChain->Release();
@@ -155,6 +182,7 @@ unsigned int Renderer::GetWindowHeight() const {
 void Renderer::Render(Scene &scene) {
 	float clearColor[4] = { 1, 1, 1, 1 };
 	dxDeviceContext->ClearRenderTargetView(this->renderTargetView, clearColor);
+	dxDeviceContext->ClearDepthStencilView(this->depthStencilView, D3D11_CLEAR_DEPTH, 1.0, 0);
 
 	glm::mat4 viewProjection = glm::transpose(
 		scene.GetCamera()->GetProjectionMatrix() * scene.GetCamera()->GetViewMatrix());
@@ -180,12 +208,10 @@ void Renderer::Render(Scene &scene) {
 
 	this->dxDeviceContext->IASetPrimitiveTopology(
 		D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-	
-	//TODO: Set blendState
 
 	this->dxDeviceContext->OMSetRenderTargets(1,
 		&this->renderTargetView,
-		nullptr); //TODO: Set depthStencilView
+		this->depthStencilView);
 
 	this->dxDeviceContext->Draw(NR_OF_BOIDS, 0);
 	
@@ -193,8 +219,6 @@ void Renderer::Render(Scene &scene) {
 	this->dxDeviceContext->VSSetShader(nullptr, nullptr, 0);
 	this->dxDeviceContext->GSSetShader(nullptr, nullptr, 0);
 	this->dxDeviceContext->PSSetShader(nullptr, nullptr, 0);
-
-	//Unset blendState
 }
 
 void Renderer::Present() {

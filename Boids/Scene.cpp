@@ -3,12 +3,12 @@
 
 //Constructiors and deconstructor
 Scene::Scene(Renderer* rendererPtr) {
-	int startPos = - ((NR_OF_BOIDS * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
+	int startPos = 0.0f;//- ((NR_OF_BOIDS * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
 
 	for (int i = 0; i < NR_OF_BOIDS; i++) {
-		int x = startPos + (BOID_SEPERATION * i); //TODO: Evenly divide across room
+		int x = 0.0f; //TODO: Evenly divide across room
 		int y = 0.0f;//BOID_SEPERATION;
-		int z = 0.0f;//BOID_SEPERATION;
+		int z = startPos + (BOID_SEPERATION * i);//BOID_SEPERATION;
 		this->boids[i] = Boid(glm::vec3(x, y, z));
 	}
 	this->camera = Camera(90.0, rendererPtr->GetWindowWidth(), rendererPtr->GetWindowHeight());

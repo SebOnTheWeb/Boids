@@ -31,7 +31,7 @@ Camera::Camera(float fieldOfView, int width, int height) {
 	this->projectionMatrix = glm::perspectiveFovLH(glm::radians(this->fieldOfView),
 		(float)width,
 		(float)height,
-		0.001f,
+		0.1f,
 		100.0f);
 }
 

@@ -10,7 +10,7 @@ Boid::Boid() {
 
 Boid::Boid(const glm::vec3 &position) {
 	this->position = position;
-	this->velocity = glm::vec3(0.0, 0.0, 1.0);
+	this->velocity = glm::vec3(0.0, 1.0, 0.0);
 }
 
 Boid::~Boid() {
