@@ -12,9 +12,10 @@ const unsigned int	MAX_ROTATION = 20;
 class BoidLogicHandler {
 private:
 	Renderer* rendererPtr;
-	//TODO: Compute shader
+	
+	ID3D11ComputeShader* computeShader;
 
-	//Helper functions
+	//Helper functions //TODO: Helper only for CPU?
 	void moveBoids(Scene* scene, float deltaTime);
 
 public:

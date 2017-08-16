@@ -13,10 +13,29 @@ void BoidLogicHandler::moveBoids(Scene* scene, float deltaTime) {
 //Constructors and deconstructors
 BoidLogicHandler::BoidLogicHandler(Renderer* rendererPtr) {
 	this->rendererPtr = rendererPtr;
+
+	ID3DBlob* shaderBlob;
+	ID3DBlob* errorBlob;
+
+	//Init compute shader
+	HRESULT hr = D3DCompileFromFile(L"BoidUpdate_CS.hlsl",
+		nullptr,
+		nullptr,
+		"main",
+		"cs_5_0",
+		0,
+		0,
+		&shaderBlob,
+		&errorBlob);
+
+	hr = rendererPtr->GetDxDevice()->CreateComputeShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		nullptr,
+		&this->computeShader);
 }
 
 BoidLogicHandler::~BoidLogicHandler() {
-
+	this->computeShader->Release();
 }
 
 //Functions

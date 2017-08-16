@@ -5,6 +5,9 @@
 
 #include <windows.h>
 #include <d3d11.h>
+#include <fstream>
+#include <iostream>
+#include <string>
 
 #include "Renderer.h"
 #include "Scene.h"
@@ -16,6 +19,7 @@
 
 HWND CreateShowWindow(int windowWidth, int windowHeight, InputManager* inputManagerPtr);
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+void saveToFile(int* data, int nrOfDataElements);
 
 INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow) {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -44,6 +48,10 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 
 	//Init timer
 	double time = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+	//Init fps tracking
+	double secondTracker = 0.0;
+	int fpsCounter = 0;
 
 	// Run the message loop.
 	MSG msg;
@@ -88,12 +96,34 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 		//Render
 		renderer.Render(scene);
 		renderer.Present();
+
+		//FPS tracking
+		fpsCounter += 1;
+		secondTracker += deltaTime;
+		if (secondTracker > 1000000000) { //If a second has passed TODO: How to do this best?
+			//TODO: Save fpsCounter
+			fpsCounter = 0;
+		}
 	}
+
+	//int data[1] = { 1 };
+	//saveToFile(data, 10);
 
 	delete inputManager;
 	inputManager = nullptr;
 
 	return 0;
+}
+
+void saveToFile(int* data, int nrOfDataElements) {
+	std::ofstream file;
+	file.open("data.csv");
+
+	for (int i = 0; i < nrOfDataElements; i++) {
+		file << "Test " << i << "\n";
+	}
+
+	file.close();
 }
 
 HWND CreateShowWindow(int windowWidth, int windowHeight, InputManager* inputManagerPtr) {
