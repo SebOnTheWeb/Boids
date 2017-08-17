@@ -39,6 +39,9 @@
     <ClCompile Include="BoidLogicHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GridCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Boid.h">
@@ -62,6 +65,9 @@
     <ClInclude Include="BoidLogicHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GridCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Default_VS.hlsl">
@@ -74,6 +80,9 @@
       <Filter>Resource Files</Filter>
     </FxCompile>
     <FxCompile Include="BoidUpdate_CS.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="Grid_VS.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
   </ItemGroup>

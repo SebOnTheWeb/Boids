@@ -4,6 +4,7 @@
 #include "Boid.h"
 #include "Camera.h"
 #include "StorageBuffer.h"
+#include "GridCube.h"
 
 class Renderer;
 
@@ -15,6 +16,7 @@ class Scene {
 private:
 	Boid boidsPrevious[NR_OF_BOIDS];
 	Boid boids[NR_OF_BOIDS];
+	GridCube* gridCube;
 	Camera camera;
 	StorageBuffer* storageBuffers[2];
 
@@ -28,6 +30,7 @@ public:
 	//Getters and setters
 	Boid GetBoid(unsigned int index) const;
 	Boid* GetAllBoids();
+	GridCube* GetGridCube();
 	Camera* GetCamera();
 	StorageBuffer* GetStorageBuffer(unsigned int index) const;
 };

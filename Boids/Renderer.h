@@ -28,7 +28,9 @@ private:
 
 	StorageBuffer* metaDataBufferPtr;
 
+
 	ID3D11VertexShader* vertexShader;
+	ID3D11VertexShader* gridVertexShader;
 	ID3D11GeometryShader* geometryShader;
 	ID3D11PixelShader* pixelShader;
 

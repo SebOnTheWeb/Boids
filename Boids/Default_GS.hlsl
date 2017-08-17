@@ -4,7 +4,7 @@ struct Boid {
 	float3 up: UP;
 };
 
-struct GS_OUTPUT {
+struct PS_INPUT {
 	float4 pos : SV_POSITION;
 	float4 color : COLOR;
 };
@@ -13,7 +13,7 @@ StructuredBuffer<float4x4> viewProjectionBuffer: register(t0);
 
 [maxvertexcount(18)]
 void main(point Boid input[1], 
-	inout TriangleStream< GS_OUTPUT > output) {
+	inout TriangleStream< PS_INPUT > output) {
 
 	float4x4 viewProjectionMatrix = viewProjectionBuffer[0];
 
@@ -21,7 +21,7 @@ void main(point Boid input[1],
 	float3 up = normalize(input[0].up);
 	float3 right = -cross(front, up);
 
-	GS_OUTPUT element;
+	PS_INPUT element;
 	float3 pos;
 
 	//Triangle 1

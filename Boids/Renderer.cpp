@@ -85,6 +85,7 @@ void Renderer::InitD3D11() {
 	ID3DBlob* errorBlob;
 
 	//Vertex shader
+		//Default_VS
 	hr = D3DCompileFromFile(L"Default_VS.hlsl",
 		nullptr,
 		nullptr,
@@ -99,6 +100,22 @@ void Renderer::InitD3D11() {
 		shaderBlob->GetBufferSize(),
 		nullptr,
 		&this->vertexShader);
+
+		//Grid_VS
+	hr = D3DCompileFromFile(L"Grid_VS.hlsl",
+		nullptr,
+		nullptr,
+		"main",
+		"vs_5_0",
+		0,
+		0,
+		&shaderBlob,
+		&errorBlob);
+
+	hr = this->dxDevice->CreateVertexShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		nullptr,
+		&this->gridVertexShader);
 
 	//Geometry shader
 	hr = D3DCompileFromFile(L"Default_GS.hlsl",
@@ -132,7 +149,6 @@ void Renderer::InitD3D11() {
 		nullptr,
 		&this->pixelShader);
 }
-
 
 void Renderer::DeInitD3D11() {
 	this->depthBufferTexture->Release();
@@ -217,9 +233,27 @@ void Renderer::Render(Scene &scene) {
 
 	this->dxDeviceContext->Draw(NR_OF_BOIDS, 0);
 	
-	//Unset shaders
+	//Unset VS and GS
 	this->dxDeviceContext->VSSetShader(nullptr, nullptr, 0);
 	this->dxDeviceContext->GSSetShader(nullptr, nullptr, 0);
+
+	//############# Grid render #############
+	
+	ID3D11ShaderResourceView* GridVSsrvs[] = { metaDataBufferPtr->GetShaderResourceView(),
+												scene.GetGridCube()->GetGridDataBuffer()->GetShaderResourceView() };
+	this->dxDeviceContext->VSSetShaderResources(0, 2, GridVSsrvs);
+
+	this->dxDeviceContext->VSSetShader(this->gridVertexShader,
+		nullptr,
+		0);
+
+	this->dxDeviceContext->IASetPrimitiveTopology(
+			D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	this->dxDeviceContext->Draw(scene.GetGridCube()->GetNrOfGridVertices(), 0);
+
+	//Unset shaders
+	this->dxDeviceContext->VSSetShader(nullptr, nullptr, 0);
 	this->dxDeviceContext->PSSetShader(nullptr, nullptr, 0);
 }
 
