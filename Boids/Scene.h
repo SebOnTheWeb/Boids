@@ -8,7 +8,7 @@
 
 class Renderer;
 
-const unsigned int NR_OF_BOIDS = 10; //Must be dividable by 10
+const unsigned int NR_OF_BOIDS = 100; //Must be dividable by 10
 const float BOID_SEPERATION = 2.0f;
 
 

@@ -184,10 +184,6 @@ float GridCube::GetSideLength() const {
 	return this->sideLength;
 }
 
-int GridCube::GetGridDensity() const {
-	return this->gridDensity;
-}
-
 glm::vec3 GridCube::GetCubeCenterPos() const {
 	return this->cubeCenterPos;
 }

@@ -3,14 +3,73 @@
 
 //Constructiors and deconstructor
 Scene::Scene(Renderer* rendererPtr) {
-	float startPos = - ((NR_OF_BOIDS * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
+	float x, y, z;
+	float startPos;
+	int index = 0;
 
-	for (int i = 0; i < NR_OF_BOIDS; i++) {
-		float x = startPos + (BOID_SEPERATION * (float)i); //TODO: Evenly divide across room
-		float y = 0.0f;//BOID_SEPERATION;
-		float z = 0.0f;//BOID_SEPERATION;
-		this->boids[i] = Boid(glm::vec3(x, y, z));
+	if (NR_OF_BOIDS == 100) {
+		//Plain formation
+		startPos = -(((NR_OF_BOIDS / 10) * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
+		for (int i = 0; i < NR_OF_BOIDS / 10; i++) {
+			for (int j = 0; j < NR_OF_BOIDS / 10; j++) {
+				x = startPos + (BOID_SEPERATION * (float)i);
+				y = 0.0f;
+				z = startPos + (BOID_SEPERATION * (float)j);
+
+				this->boids[index] = Boid(glm::vec3(x, y, z));
+				index++;
+			}
+		}
 	}
+	else if (NR_OF_BOIDS == 1000) {
+		//Cube formation
+		startPos = -(((NR_OF_BOIDS / 100) * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
+		for (int i = 0; i < NR_OF_BOIDS / 100; i++) {
+			for (int j = 0; j < NR_OF_BOIDS / 100; j++) {
+				for (int k = 0; k < NR_OF_BOIDS / 100; k++) {
+					x = startPos + (BOID_SEPERATION * (float)i);
+					y = startPos + (BOID_SEPERATION * (float)k);
+					z = startPos + (BOID_SEPERATION * (float)j);
+
+					this->boids[index] = Boid(glm::vec3(x, y, z));
+					index++;
+				}
+			}
+		}
+	}
+	else if (NR_OF_BOIDS == 10000) {
+		//Cube formation, ish
+		startPos = -(((22) * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
+		for (int i = 0; i < 22; i++) {
+			for (int j = 0; j < 22; j++) {
+				for (int k = 0; k < 22; k++) {
+					x = startPos + (BOID_SEPERATION * (float)i);
+					y = startPos + (BOID_SEPERATION * (float)k);
+					z = startPos + (BOID_SEPERATION * (float)j);
+
+					this->boids[index] = Boid(glm::vec3(x, y, z));
+					index++;
+					if (index == 9999) {
+						i = 22;
+						j = 22;
+						k = 22;
+					}
+				}
+			}
+		}
+	}
+	else {
+		//Straight line
+		startPos = -((NR_OF_BOIDS * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
+		for (int i = 0; i < NR_OF_BOIDS; i++) {
+			x = startPos + (BOID_SEPERATION * (float)i);
+			y = 0.0f;
+			z = 0.0f;
+
+			this->boids[i] = Boid(glm::vec3(x, y, z));
+		}
+	}
+
 	this->gridCube = new GridCube(rendererPtr, 20.0f, 20, glm::vec3(0.0f, 0.0f, 0.0f));
 	this->camera = Camera(90.0, rendererPtr->GetWindowWidth(), rendererPtr->GetWindowHeight());
 	this->rendererPtr = rendererPtr;

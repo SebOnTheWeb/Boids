@@ -69,6 +69,12 @@ void Camera::Update(float moveSpeed, float rotationSpeed, float deltaTime, Input
 	glm::vec3 movement = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
+	//Double movement when shift is pressed
+	if (inputManager->KeyPressed(VK_LSHIFT)) {
+		moveSpeed *= 2;
+		rotationSpeed *= 2;
+	}
+
 	//Update movement based on keys pressed
 	if (inputManager->KeyPressed(0x41)) { // A
 		movement -= this->right;
