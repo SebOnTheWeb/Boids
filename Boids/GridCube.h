@@ -20,6 +20,14 @@ private:
 	int nrOfGridVertices;
 	StorageBuffer* gridDataBufferPtr;
 
+	//Put here to avoid calculating for each frame
+	float xMax;
+	float xMin;
+	float yMax;
+	float yMin;
+	float zMax;
+	float zMin;
+
 	//Helper functions
 	GridVertex* GenerateGridVertices();
 
@@ -34,4 +42,7 @@ public:
 	glm::vec3 GetCubeCenterPos() const;
 	int GetNrOfGridVertices() const;
 	StorageBuffer* GetGridDataBuffer();
+
+	//Functions
+	glm::vec3 MoveIfOutOfBounds(glm::vec3 position);
 };

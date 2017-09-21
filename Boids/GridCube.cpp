@@ -159,6 +159,13 @@ GridCube::GridCube() {
 
 	this->nrOfGridVertices = 0;
 	this->gridDataBufferPtr = nullptr;
+
+	this->xMax = this->cubeCenterPos.x + (sideLength / (float)2);
+	this->xMin = this->cubeCenterPos.x - (sideLength / (float)2);
+	this->yMax = this->cubeCenterPos.y + (sideLength / (float)2);
+	this->yMin = this->cubeCenterPos.y - (sideLength / (float)2);
+	this->zMax = this->cubeCenterPos.z + (sideLength / (float)2);
+	this->zMin = this->cubeCenterPos.z - (sideLength / (float)2);
 }
 
 GridCube::GridCube(Renderer* rendererPtr, float sideLength, int gridThickness, glm::vec3 cubeCenterPos) {
@@ -172,6 +179,13 @@ GridCube::GridCube(Renderer* rendererPtr, float sideLength, int gridThickness, g
 	this->gridDataBufferPtr = new StorageBuffer(rendererPtr, this->nrOfGridVertices, sizeof(GridVertex));
 	this->gridDataBufferPtr->SetData(gridVertices, sizeof(GridVertex) * this->nrOfGridVertices);
 	delete gridVertices;
+
+	this->xMax = this->cubeCenterPos.x + (sideLength / (float)2);
+	this->xMin = this->cubeCenterPos.x - (sideLength / (float)2);
+	this->yMax = this->cubeCenterPos.y + (sideLength / (float)2);
+	this->yMin = this->cubeCenterPos.y - (sideLength / (float)2);
+	this->zMax = this->cubeCenterPos.z + (sideLength / (float)2);
+	this->zMin = this->cubeCenterPos.z - (sideLength / (float)2);
 }
 
 GridCube::~GridCube() {
@@ -194,4 +208,33 @@ StorageBuffer* GridCube::GetGridDataBuffer() {
 
 int GridCube::GetNrOfGridVertices() const {
 	return this->nrOfGridVertices;
+}
+
+//Functions
+glm::vec3 GridCube::MoveIfOutOfBounds(glm::vec3 position) {
+	glm::vec3 newPosition = position;
+
+	//X
+	if (position.x > xMax) {
+		newPosition.x = xMin;
+	}
+	if (position.x < xMin) {
+		newPosition.x = xMax;
+	}
+	//Y
+	if (position.y > yMax) {
+		newPosition.y = yMin;
+	}
+	if (position.y < yMin) {
+		newPosition.y = yMax;
+	}
+	//Z
+	if (position.z > zMax) {
+		newPosition.z = zMin;
+	}
+	if (position.z < zMin) {
+		newPosition.z = zMax;
+	}
+
+	return newPosition;
 }

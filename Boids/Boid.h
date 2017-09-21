@@ -1,6 +1,9 @@
 #pragma once
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm\glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
 
 class Boid {
 private:
@@ -18,5 +21,7 @@ public:
 	glm::vec3 GetPosition() const;
 	glm::vec3 GetVelocity() const;
 	void SetPosition(const glm::vec3 &position);
+	void SetPosition(float x, float y, float z);
 	void SetVelocity(const glm::vec3 &velocity);
+	void SetVelocity(float x, float y, float z);
 };

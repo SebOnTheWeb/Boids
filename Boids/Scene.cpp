@@ -69,8 +69,17 @@ Scene::Scene(Renderer* rendererPtr) {
 			this->boids[i] = Boid(glm::vec3(x, y, z));
 		}
 	}
+	
+	//Randomize initial velocities (between -0.05 and 0.05 in all directions
+	srand(time(0));
+	for (int i = 0; i < NR_OF_BOIDS; i++) {
+		x = ((float)rand() / RAND_MAX) -0.5;
+		y = ((float)rand() / RAND_MAX) - 0.5;
+		z = ((float)rand() / RAND_MAX) - 0.5;
+		this->boids[i].SetVelocity(x, y, z);
+	}
 
-	this->gridCube = new GridCube(rendererPtr, 20.0f, 20, glm::vec3(0.0f, 0.0f, 0.0f));
+	this->gridCube = new GridCube(rendererPtr, 40.0f, 40, glm::vec3(0.0f, 0.0f, 0.0f));
 	this->camera = Camera(90.0, rendererPtr->GetWindowWidth(), rendererPtr->GetWindowHeight());
 	this->rendererPtr = rendererPtr;
 	this->storageBuffers[0] = new StorageBuffer(rendererPtr, NR_OF_BOIDS, sizeof(Boid));
@@ -96,6 +105,14 @@ Boid* Scene::GetAllBoids() {
 	return this->boids;
 }
 
+Boid* Scene::GetAllBoidsPrevious() {
+	Boid* tempHolder = this->boidsPrevious;
+	this->boidsPrevious = this->boids;
+	this->boids = this->boidsPrevious;
+
+	return this->boidsPrevious;
+}
+
 GridCube* Scene::GetGridCube() {
 	return this->gridCube;
 }
@@ -107,4 +124,8 @@ Camera* Scene::GetCamera() {
 StorageBuffer* Scene::GetStorageBuffer(unsigned int index) const {
 	assert(index < 2);
 	return this->storageBuffers[index];
+}
+
+void Scene::SetBoidVelocity(unsigned int index, glm::vec3 newVelocity) {
+	this->boids[index].SetVelocity(newVelocity);
 }
