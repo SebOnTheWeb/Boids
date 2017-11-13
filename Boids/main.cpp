@@ -24,6 +24,8 @@ void saveToFile(int* data, int nrOfDataElements);
 INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow) {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
+	unsigned const int SECOND_IN_NANOS = 1000000000;
+
 	unsigned int windowWidth = 1024;
 	unsigned int windowHeight = 800;
 
@@ -42,8 +44,8 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	BoidLogicHandler boidLogic = BoidLogicHandler(&renderer);
 
 	//################## Logic init options #######################
-	boidLogic.InitCPULogic(&scene);
-	//boidLogic.InitGPULogic();
+	//boidLogic.InitCPULogic(&scene);
+	boidLogic.InitGPULogic(&scene);
 	//#############################################################
 
 	//Init timer
@@ -84,9 +86,9 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 
 		if (updateLogic) {
 			//################## Logic update options #####################
-			boidLogic.SingleThreadUpdate(&scene, deltaTime);
-			//boidLogic.MultiThreadUpdate(scene, deltaTime);
-			//boidLogic.GPUUpdate(scene, deltaTime);
+			//boidLogic.SingleThreadUpdate(&scene, deltaTime);
+			//boidLogic.MultiThreadUpdate(&scene, deltaTime);
+			boidLogic.GPUUpdate(&scene, deltaTime);
 			//#############################################################
 		}
 
@@ -100,9 +102,12 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 		//FPS tracking
 		fpsCounter += 1;
 		secondTracker += deltaTime;
-		if (secondTracker > 1000000000) { //If a second has passed TODO: How to do this best?
+		if (secondTracker > SECOND_IN_NANOS / 2) { //If a second has passed TODO: How to do this best?
+			fpsCounter * 2;
 			//TODO: Save fpsCounter
+
 			fpsCounter = 0;
+			secondTracker = 0.0;
 		}
 	}
 

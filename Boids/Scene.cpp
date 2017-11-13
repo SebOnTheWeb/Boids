@@ -7,7 +7,7 @@ Scene::Scene(Renderer* rendererPtr) {
 	float startPos;
 	int index = 0;
 
-	if (NR_OF_BOIDS == 100) {
+	if (NR_OF_BOIDS == 64) {
 		//Plain formation
 		startPos = -(((NR_OF_BOIDS / 10) * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
 		for (int i = 0; i < NR_OF_BOIDS / 10; i++) {
@@ -21,12 +21,12 @@ Scene::Scene(Renderer* rendererPtr) {
 			}
 		}
 	}
-	else if (NR_OF_BOIDS == 1000) {
+	else if (NR_OF_BOIDS == 512) {
 		//Cube formation
-		startPos = -(((NR_OF_BOIDS / 100) * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
-		for (int i = 0; i < NR_OF_BOIDS / 100; i++) {
-			for (int j = 0; j < NR_OF_BOIDS / 100; j++) {
-				for (int k = 0; k < NR_OF_BOIDS / 100; k++) {
+		startPos = -(((NR_OF_BOIDS / 64) * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
+		for (int i = 0; i < NR_OF_BOIDS / 64; i++) {
+			for (int j = 0; j < NR_OF_BOIDS / 64; j++) {
+				for (int k = 0; k < NR_OF_BOIDS / 64; k++) {
 					x = startPos + (BOID_SEPERATION * (float)i);
 					y = startPos + (BOID_SEPERATION * (float)k);
 					z = startPos + (BOID_SEPERATION * (float)j);
@@ -37,23 +37,18 @@ Scene::Scene(Renderer* rendererPtr) {
 			}
 		}
 	}
-	else if (NR_OF_BOIDS == 10000) {
-		//Cube formation, ish
-		startPos = -(((22) * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
-		for (int i = 0; i < 22; i++) {
-			for (int j = 0; j < 22; j++) {
-				for (int k = 0; k < 22; k++) {
+	else if (NR_OF_BOIDS == 4096) {
+		//Cube formation
+		startPos = -(((NR_OF_BOIDS / 256) * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
+		for (int i = 0; i < NR_OF_BOIDS / 256; i++) {
+			for (int j = 0; j < NR_OF_BOIDS / 256; j++) {
+				for (int k = 0; k < NR_OF_BOIDS / 256; k++) {
 					x = startPos + (BOID_SEPERATION * (float)i);
 					y = startPos + (BOID_SEPERATION * (float)k);
 					z = startPos + (BOID_SEPERATION * (float)j);
 
 					this->boids[index] = Boid(glm::vec3(x, y, z));
 					index++;
-					if (index == 9999) {
-						i = 22;
-						j = 22;
-						k = 22;
-					}
 				}
 			}
 		}
@@ -70,7 +65,7 @@ Scene::Scene(Renderer* rendererPtr) {
 		}
 	}
 	
-	//Randomize initial velocities (between -0.05 and 0.05 in all directions
+	//Randomize initial velocities (between -0.05 and 0.05 in all directions)
 	srand(time(0));
 	for (int i = 0; i < NR_OF_BOIDS; i++) {
 		x = ((float)rand() / RAND_MAX) -0.5;
@@ -79,7 +74,7 @@ Scene::Scene(Renderer* rendererPtr) {
 		this->boids[i].SetVelocity(x, y, z);
 	}
 
-	this->gridCube = new GridCube(rendererPtr, 40.0f, 40, glm::vec3(0.0f, 0.0f, 0.0f));
+	this->gridCube = new GridCube(rendererPtr, GRID_SIDE_LENGTH, 40, glm::vec3(0.0f, 0.0f, 0.0f));
 	this->camera = Camera(90.0, rendererPtr->GetWindowWidth(), rendererPtr->GetWindowHeight());
 	this->rendererPtr = rendererPtr;
 	this->storageBuffers[0] = new StorageBuffer(rendererPtr, NR_OF_BOIDS, sizeof(Boid));

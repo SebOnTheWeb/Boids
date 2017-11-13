@@ -2,34 +2,30 @@
 
 #include "Scene.h"
 #include "Renderer.h"
+#include "Constants.h"
 #include <cmath>
-
-const float			MIN_SEPERATION_DISTANCE = 2.0f;
-const unsigned int	COHESION_THRESHHOLD = 2;
-const float			BOID_SPEED = 1.0f;
-const float			MAX_SPEED = 8.0f;
-const float			MIN_SPEED = 0.5f;
-const unsigned int	MAX_ROTATION = 15;
-const float			MAX_ACCELERATION = 0.01f;
-
-//Rule factors
-const float			CENTER_FACTOR = 0.01f;
-const float			MATCH_FACTOR = 0.125;
+#include <thread>
 
 class BoidLogicHandler {
 private:
 	Renderer* rendererPtr;
 	
 	ID3D11ComputeShader* computeShader;
+	StorageBuffer* constantsBuffer; // Not actually a constant buffer, because reusing of StorageBuffer
+	StorageBuffer* deltaTimeBuffer;
+	int boidBufferSwitchIndex;
 
-	//Helper functions //TODO: Helper only for CPU?
-	void moveBoids(Scene* scene, float deltaTime);
+	//Helper functions 
+	void moveBoids(Scene* scene, float deltaTime); //TODO: Remove this and do for each boid instead
 
-	glm::vec3 CenterRule(Boid* allBoids, int currentBoidIndex);
-	glm::vec3 AvoidRule(Boid* allBoids, int currentBoidIndex);
-	glm::vec3 VelocityRule(Boid* allBoids, int currentBoidIndex);
+	static glm::vec3 CenterRule(Boid* allBoids, int currentBoidIndex);
+	static glm::vec3 AvoidRule(Boid* allBoids, int currentBoidIndex);
+	static glm::vec3 VelocityRule(Boid* allBoids, int currentBoidIndex);
 
-	glm::vec3 LimitSpeed(glm::vec3 oldVelocity, glm::vec3 newVelocity);
+	static glm::vec3 LimitSpeed(glm::vec3 oldVelocity, glm::vec3 newVelocity);
+
+	//Helper functions for multi-threaded CPU
+	static void BoidThread(Scene* scene, int startIndex, int endIndex);
 
 public:
 	//Constructors and deconstructor
@@ -38,7 +34,7 @@ public:
 	
 	//Functions
 	void InitCPULogic(Scene* scenePtr);
-	void InitGPULogic();
+	void InitGPULogic(Scene* scenePtr);
 
 	void SingleThreadUpdate(Scene* scene, float deltaTime);
 	void MultiThreadUpdate(Scene* scene, float deltaTime);

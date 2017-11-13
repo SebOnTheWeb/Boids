@@ -6,12 +6,9 @@
 #include "Camera.h"
 #include "StorageBuffer.h"
 #include "GridCube.h"
+#include "Constants.h"
 
 class Renderer;
-
-const unsigned int NR_OF_BOIDS = 100; //Must be dividable by 10
-const float BOID_SEPERATION = 2.0f; //Init position seperation
-
 
 class Scene {
 private:
@@ -19,7 +16,7 @@ private:
 	Boid* boids = new Boid[NR_OF_BOIDS];
 	GridCube* gridCube;
 	Camera camera;
-	StorageBuffer* storageBuffers[2];
+	StorageBuffer* storageBuffers[2]; // TODO: Rename to boidBuffers
 
 	Renderer* rendererPtr;
 

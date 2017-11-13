@@ -20,14 +20,6 @@ private:
 	int nrOfGridVertices;
 	StorageBuffer* gridDataBufferPtr;
 
-	//Put here to avoid calculating for each frame
-	float xMax;
-	float xMin;
-	float yMax;
-	float yMin;
-	float zMax;
-	float zMin;
-
 	//Helper functions
 	GridVertex* GenerateGridVertices();
 
