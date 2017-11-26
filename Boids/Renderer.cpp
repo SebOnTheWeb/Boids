@@ -208,7 +208,7 @@ void Renderer::Render(Scene &scene) {
 
 
 	//Set shader resources
-	ID3D11ShaderResourceView* VSsrvs[] = { scene.GetStorageBuffer(0)->GetShaderResourceView() };
+	ID3D11ShaderResourceView* VSsrvs[] = { scene.GetBoidBuffer(0)->GetShaderResourceView() };
 	this->dxDeviceContext->VSSetShaderResources(0, 1, VSsrvs);
 	ID3D11ShaderResourceView* GSsrvs[] = { metaDataBufferPtr->GetShaderResourceView() };
 	this->dxDeviceContext->GSSetShaderResources(0, 1, GSsrvs);

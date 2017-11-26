@@ -77,15 +77,15 @@ Scene::Scene(Renderer* rendererPtr) {
 	this->gridCube = new GridCube(rendererPtr, GRID_SIDE_LENGTH, 40, glm::vec3(0.0f, 0.0f, 0.0f));
 	this->camera = Camera(90.0, rendererPtr->GetWindowWidth(), rendererPtr->GetWindowHeight());
 	this->rendererPtr = rendererPtr;
-	this->storageBuffers[0] = new StorageBuffer(rendererPtr, NR_OF_BOIDS, sizeof(Boid));
-	this->storageBuffers[1] = new StorageBuffer(rendererPtr, NR_OF_BOIDS, sizeof(Boid));
+	this->boidBuffers[0] = new StorageBuffer(rendererPtr, NR_OF_BOIDS, sizeof(Boid));
+	this->boidBuffers[1] = new StorageBuffer(rendererPtr, NR_OF_BOIDS, sizeof(Boid));
 }
 
 Scene::~Scene() {
-	delete storageBuffers[0];
-	storageBuffers[0] = nullptr;
-	delete storageBuffers[1];
-	storageBuffers[1] = nullptr;
+	delete boidBuffers[0];
+	boidBuffers[0] = nullptr;
+	delete boidBuffers[1];
+	boidBuffers[1] = nullptr;
 	delete this->gridCube;
 	this->gridCube = nullptr;
 }
@@ -116,9 +116,9 @@ Camera* Scene::GetCamera() {
 	return &this->camera;
 }
 
-StorageBuffer* Scene::GetStorageBuffer(unsigned int index) const {
+StorageBuffer* Scene::GetBoidBuffer(unsigned int index) const {
 	assert(index < 2);
-	return this->storageBuffers[index];
+	return this->boidBuffers[index];
 }
 
 void Scene::SetBoidVelocity(unsigned int index, glm::vec3 newVelocity) {

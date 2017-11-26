@@ -16,7 +16,7 @@ private:
 	Boid* boids = new Boid[NR_OF_BOIDS];
 	GridCube* gridCube;
 	Camera camera;
-	StorageBuffer* storageBuffers[2]; // TODO: Rename to boidBuffers
+	StorageBuffer* boidBuffers[2];
 
 	Renderer* rendererPtr;
 
@@ -31,7 +31,7 @@ public:
 	Boid* GetAllBoidsPrevious();
 	GridCube* GetGridCube();
 	Camera* GetCamera();
-	StorageBuffer* GetStorageBuffer(unsigned int index) const;
+	StorageBuffer* GetBoidBuffer(unsigned int index) const;
 
 	void SetBoidVelocity(unsigned int index, glm::vec3 newVelocity);
 };

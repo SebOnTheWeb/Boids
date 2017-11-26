@@ -13,11 +13,10 @@ const float			AVOID_FACTOR = 1.0f;
 const float			MATCH_FACTOR = 0.125;
 
 /* VALID FLOCK SIZES
-8 <-- NOT IMPLEMENTED
 64
 512
 4096
-32768 <-- NOT IMPLEMENTED/Is it viable?
+32768 <--  TODO: NOT IMPLEMENTED/Is it viable?
 */
 const unsigned int NR_OF_BOIDS = 512; //Must be dividable by 8
 const float BOID_SEPERATION = 3.0f; //Init position seperation

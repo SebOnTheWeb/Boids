@@ -91,7 +91,7 @@ void Camera::Update(float moveSpeed, float rotationSpeed, float deltaTime, Input
 
 	//TODO: Fix camera roation being laggy
 	//Update rotation based on mouse movement and keys pressed
-	if (inputManager->KeyPressed(VK_RBUTTON)) { // TODO: Left click
+	if (inputManager->KeyPressed(VK_RBUTTON)) {
 		glm::vec2 deltaMove = inputManager->MouseDeltaMovement();
 		rotation.x = deltaMove.x * deltaTime * rotationSpeed; 
 		rotation.y = deltaMove.y * deltaTime * rotationSpeed;

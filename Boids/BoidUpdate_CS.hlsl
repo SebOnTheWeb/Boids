@@ -106,8 +106,6 @@ float3 CalculateNewPos(float3 oldPosition, float3 newVelocity) {
     float deltaTime = readBufferDeltaTime[0];
     float3 newPos = oldPosition + (newVelocity * deltaTime * readBufferConstants[0].BOID_SPEED);
 
-    //TODO: Handle grid cube limitations;
-
     return newPos;
 }
 

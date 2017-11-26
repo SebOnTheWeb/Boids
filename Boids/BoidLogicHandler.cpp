@@ -140,12 +140,12 @@ BoidLogicHandler::~BoidLogicHandler() {
 //Functions
 void BoidLogicHandler::InitCPULogic(Scene* scenePtr) {
 	//This is just to get boid positions into gpu for first frame before logic is started
-	scenePtr->GetStorageBuffer(0)->SetData(scenePtr->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
+	scenePtr->GetBoidBuffer(0)->SetData(scenePtr->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
 }
 
 void BoidLogicHandler::InitGPULogic(Scene* scenePtr) {
-	scenePtr->GetStorageBuffer(0)->SetData(scenePtr->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
-	scenePtr->GetStorageBuffer(1)->SetData(scenePtr->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
+	scenePtr->GetBoidBuffer(0)->SetData(scenePtr->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
+	scenePtr->GetBoidBuffer(1)->SetData(scenePtr->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
 
 	constantsBuffer->SetData(&constants, sizeof(Constants));
 }
@@ -182,7 +182,7 @@ void BoidLogicHandler::SingleThreadUpdate(Scene* scene, float deltaTime) {
 	}
 
 	moveBoids(scene, deltaTime);
-	scene->GetStorageBuffer(0)->SetData(scene->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
+	scene->GetBoidBuffer(0)->SetData(scene->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
 }
 
 void BoidLogicHandler::MultiThreadUpdate(Scene* scene, float deltaTime) {
@@ -203,7 +203,7 @@ void BoidLogicHandler::MultiThreadUpdate(Scene* scene, float deltaTime) {
 	}
 
 	moveBoids(scene, deltaTime);
-	scene->GetStorageBuffer(0)->SetData(scene->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
+	scene->GetBoidBuffer(0)->SetData(scene->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
 }
 
 void BoidLogicHandler::GPUUpdate(Scene* scene, float deltaTime) {
@@ -218,10 +218,10 @@ void BoidLogicHandler::GPUUpdate(Scene* scene, float deltaTime) {
 	this->deltaTimeBuffer->SetData(&deltaTime, sizeof(float));
 
 	//Dispatch shader
-	ID3D11ShaderResourceView* srvArray[] = { scene->GetStorageBuffer(boidBufferSwitchIndex)->GetShaderResourceView(),
+	ID3D11ShaderResourceView* srvArray[] = { scene->GetBoidBuffer(boidBufferSwitchIndex)->GetShaderResourceView(),
 											this->deltaTimeBuffer->GetShaderResourceView() ,
 											this->constantsBuffer->GetShaderResourceView() };
-	ID3D11UnorderedAccessView* uavArray[] = { scene->GetStorageBuffer((boidBufferSwitchIndex + 1) % 2)->GetUnorderedAccessView() };
+	ID3D11UnorderedAccessView* uavArray[] = { scene->GetBoidBuffer((boidBufferSwitchIndex + 1) % 2)->GetUnorderedAccessView() };
 	dxContext->CSSetShaderResources(0, 3, srvArray);
 	dxContext->CSSetUnorderedAccessViews(0, 1, uavArray, 0);
 	dxContext->Dispatch(NR_OF_BOIDS, 1, 1);
