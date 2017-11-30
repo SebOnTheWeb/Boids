@@ -33,5 +33,6 @@ public:
 	Camera* GetCamera();
 	StorageBuffer* GetBoidBuffer(unsigned int index) const;
 
-	void SetBoidVelocity(unsigned int index, glm::vec3 newVelocity);
+	//Functions
+	void SwitchCurrentAndPreviousBoids();
 };

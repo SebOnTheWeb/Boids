@@ -34,7 +34,4 @@ public:
 	glm::vec3 GetCubeCenterPos() const;
 	int GetNrOfGridVertices() const;
 	StorageBuffer* GetGridDataBuffer();
-
-	//Functions
-	glm::vec3 MoveIfOutOfBounds(glm::vec3 position);
 };

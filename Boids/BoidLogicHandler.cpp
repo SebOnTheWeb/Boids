@@ -1,18 +1,6 @@
 #include "BoidLogicHandler.h"
 
 //Helper functions
-void BoidLogicHandler::moveBoids(Scene* scene, float deltaTime) {
-	Boid* boids = scene->GetAllBoids();
-	
-	for (int i = 0; i < NR_OF_BOIDS; i++) {
-		glm::vec3 newPos = boids[i].GetPosition() + (boids[i].GetVelocity() * deltaTime * BOID_SPEED);
-
-		newPos = scene->GetGridCube()->MoveIfOutOfBounds(newPos);
-
-		boids[i].SetPosition(newPos);
-	}
-}
-
 glm::vec3 BoidLogicHandler::CenterRule(Boid* allBoids, int currentBoidIndex) {
 	glm::vec3 center = glm::vec3(0.0, 0.0, 0.0);
 
@@ -75,8 +63,52 @@ glm::vec3 BoidLogicHandler::LimitSpeed(glm::vec3 oldVelocity, glm::vec3 newVeloc
 	return limitedVelocity;
 }
 
-void BoidLogicHandler::BoidThread(Scene* scene, int startIndex, int endIndex) {
+glm::vec3 BoidLogicHandler::CalculateNewPos(glm::vec3 oldPosition, glm::vec3 newVelocity, float deltaTime) {
+	glm::vec3 newPos = oldPosition + (newVelocity * deltaTime * BOID_SPEED);
+
+	return newPos;
+}
+
+glm::vec3 BoidLogicHandler::MoveIfOutOfBounds(glm::vec3 position) {
+	glm::vec3 newPosition = position;
+
+	float sideLength = GRID_SIDE_LENGTH;
+
+	float xMax = 0.0f + (sideLength / (float)2);
+	float xMin = 0.0f - (sideLength / (float)2);
+	float yMax = 0.0f + (sideLength / (float)2);
+	float yMin = 0.0f - (sideLength / (float)2);
+	float zMax = 0.0f + (sideLength / (float)2);
+	float zMin = 0.0f - (sideLength / (float)2);
+
+	//X
+	if (position.x > xMax) {
+		newPosition.x = xMin;
+	}
+	if (position.x < xMin) {
+		newPosition.x = xMax;
+	}
+	//Y
+	if (position.y > yMax) {
+		newPosition.y = yMin;
+	}
+	if (position.y < yMin) {
+		newPosition.y = yMax;
+	}
+	//Z
+	if (position.z > zMax) {
+		newPosition.z = zMin;
+	}
+	if (position.z < zMin) {
+		newPosition.z = zMax;
+	}
+
+	return newPosition;
+}
+
+void BoidLogicHandler::BoidThread(Scene* scene, int startIndex, int endIndex, float deltaTime) {
 	Boid* allBoidsPrevious = scene->GetAllBoidsPrevious();
+	Boid* allBoids = scene->GetAllBoids();
 	glm::vec3 newVelocity = glm::vec3(0.0, 0.0, 0.0);
 	glm::vec3 previousVelocity = glm::vec3(0.0, 0.0, 0.0);
 
@@ -99,8 +131,18 @@ void BoidLogicHandler::BoidThread(Scene* scene, int startIndex, int endIndex) {
 		//Limit speed
 		newVelocity = LimitSpeed(previousVelocity, newVelocity);
 
-		//Set boid velocity
-		scene->SetBoidVelocity(i, newVelocity);
+		//Set new boid velocity and up direction
+		allBoids[i].SetVelocityAndUp(newVelocity);
+
+		//Calculate new boid position
+		glm::vec3 oldPosition = allBoidsPrevious[i].GetPosition();
+		glm::vec3 newPosition = CalculateNewPos(oldPosition, newVelocity, deltaTime);
+
+		//Move if out of bounds
+		newPosition = MoveIfOutOfBounds(newPosition);
+
+		//Set boid new position
+		allBoids[i].SetPosition(newPosition);
 	}
 }
 
@@ -151,7 +193,9 @@ void BoidLogicHandler::InitGPULogic(Scene* scenePtr) {
 }
 
 void BoidLogicHandler::SingleThreadUpdate(Scene* scene, float deltaTime) {
+	scene->SwitchCurrentAndPreviousBoids();
 	Boid* allBoidsPrevious = scene->GetAllBoidsPrevious();
+	Boid* allBoids = scene->GetAllBoids();
 	glm::vec3 newVelocity = glm::vec3(0.0, 0.0, 0.0);
 	glm::vec3 previousVelocity = glm::vec3(0.0, 0.0, 0.0);
 
@@ -174,14 +218,20 @@ void BoidLogicHandler::SingleThreadUpdate(Scene* scene, float deltaTime) {
 		//Limit speed
 		newVelocity = LimitSpeed(previousVelocity, newVelocity);
 
-		//Set boid velocity
-		scene->SetBoidVelocity(i, newVelocity);
+		//Set new boid velocity and up direction
+		allBoids[i].SetVelocityAndUp(newVelocity);
 
-		//Move boid
+		//Calculate new boid position
+		glm::vec3 oldPosition = allBoidsPrevious[i].GetPosition();
+		glm::vec3 newPosition = CalculateNewPos(oldPosition, newVelocity, deltaTime);
 
+		//Move if out of bounds
+		newPosition = MoveIfOutOfBounds(newPosition);
+
+		//Set boid new position
+		allBoids[i].SetPosition(newPosition);
 	}
 
-	moveBoids(scene, deltaTime);
 	scene->GetBoidBuffer(0)->SetData(scene->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
 }
 
@@ -189,20 +239,22 @@ void BoidLogicHandler::MultiThreadUpdate(Scene* scene, float deltaTime) {
 	const int THREADS = 8;
 	std::thread threadPool[THREADS];
 
+	scene->SwitchCurrentAndPreviousBoids();
+
 	int startIndex = 0;
 	int endIndex = 0;
 
 	for (int i = 0; i < THREADS; i++) {
 		startIndex = i * (NR_OF_BOIDS / THREADS);
 		endIndex = (i * (NR_OF_BOIDS / THREADS)) + (NR_OF_BOIDS / THREADS);
-		threadPool[i] = std::thread(BoidThread, scene, startIndex, endIndex);
+		threadPool[i] = std::thread(BoidThread, scene, startIndex, endIndex, deltaTime);
 	}
 
 	for (auto& th : threadPool) {
 		th.join();
 	}
 
-	moveBoids(scene, deltaTime);
+
 	scene->GetBoidBuffer(0)->SetData(scene->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
 }
 
@@ -239,7 +291,4 @@ void BoidLogicHandler::GPUUpdate(Scene* scene, float deltaTime) {
 		dxContext->CSSetShader(nullptr,
 		nullptr,
 		0);
-
-	//Move boids TODO: Move to GPU
-	moveBoids(scene, deltaTime);
 }

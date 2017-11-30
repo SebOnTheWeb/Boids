@@ -94,12 +94,13 @@ float3 LimitSpeed(float3 oldVelocity, float3 newVelocity) {
     return limitedVelocity;
 }
 
-float3 CalculateNewUp(float3 newVelocity) {
+void SetBoidVelocityAndUp(uint index, float3 newVelocity) {
     float3 forward = normalize(newVelocity);
     float3 newRight = normalize(cross(float3(0.0f, 1.0f, 0.0f), forward));
     float3 newUp = cross(forward, newRight);
+	writeBufferBoids[index].up = newUp;
 
-    return newUp;
+	writeBufferBoids[index].velocity = newVelocity;
 }
 
 float3 CalculateNewPos(float3 oldPosition, float3 newVelocity) {
@@ -167,11 +168,8 @@ void main( uint3 DTid : SV_DispatchThreadID ) {
 	//Limit speed
     newVelocity = LimitSpeed(previousVelocty, newVelocity);
 
-	//Set new boid velocity
-    writeBufferBoids[i].velocity = newVelocity;
-    
-    //Set new boid up
-    writeBufferBoids[i].up = CalculateNewUp(newVelocity);
+	//Set new boid velocity and up direction
+	SetBoidVelocityAndUp(i, newVelocity);
 
 	//Calculate new boid position
     float3 oldPosition = readBufferBoids[i].position;

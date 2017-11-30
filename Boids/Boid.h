@@ -22,6 +22,7 @@ public:
 	glm::vec3 GetVelocity() const;
 	void SetPosition(const glm::vec3 &position);
 	void SetPosition(float x, float y, float z);
-	void SetVelocity(const glm::vec3 &velocity);
-	void SetVelocity(float x, float y, float z);
+	void SetVelocityAndUp(const glm::vec3 &velocity);
+	void SetVelocityAndUp(float x, float y, float z);
+
 };

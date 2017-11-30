@@ -16,16 +16,16 @@ private:
 	int boidBufferSwitchIndex;
 
 	//Helper functions 
-	void moveBoids(Scene* scene, float deltaTime); //TODO: Remove this and do for each boid instead
-
 	static glm::vec3 CenterRule(Boid* allBoids, int currentBoidIndex);
 	static glm::vec3 AvoidRule(Boid* allBoids, int currentBoidIndex);
 	static glm::vec3 VelocityRule(Boid* allBoids, int currentBoidIndex);
 
 	static glm::vec3 LimitSpeed(glm::vec3 oldVelocity, glm::vec3 newVelocity);
+	static glm::vec3 CalculateNewPos(glm::vec3 oldPosition, glm::vec3 newVelocity, float deltaTime);
+	static glm::vec3 MoveIfOutOfBounds(glm::vec3 position);
 
 	//Helper functions for multi-threaded CPU
-	static void BoidThread(Scene* scene, int startIndex, int endIndex);
+	static void BoidThread(Scene* scene, int startIndex, int endIndex, float deltaTime);
 
 public:
 	//Constructors and deconstructor

@@ -33,10 +33,10 @@ void Boid::SetPosition(const glm::vec3 &position) {
 }
 
 void Boid::SetPosition(float x, float y, float z) {
-	this->position = glm::vec3(x, y, z);
+	this->SetPosition(glm::vec3(x, y, z));
 }
 
-void Boid::SetVelocity(const glm::vec3 &velocity) {
+void Boid::SetVelocityAndUp(const glm::vec3 &velocity) {
 	glm::vec3 forward = glm::normalize(velocity);
 	glm::vec3 newRight = glm::normalize(glm::cross(glm::vec3(0.0, 1.0, 0.0), forward));
 	glm::vec3 newUp = glm::cross(forward, newRight);
@@ -45,6 +45,6 @@ void Boid::SetVelocity(const glm::vec3 &velocity) {
 	this->velocity = velocity;
 }
 
-void Boid::SetVelocity(float x, float y, float z) {
-	this->SetVelocity(glm::vec3(x, y, z));
+void Boid::SetVelocityAndUp(float x, float y, float z) {
+	this->SetVelocityAndUp(glm::vec3(x, y, z));
 }

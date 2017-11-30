@@ -71,7 +71,7 @@ Scene::Scene(Renderer* rendererPtr) {
 		x = ((float)rand() / RAND_MAX) -0.5;
 		y = ((float)rand() / RAND_MAX) - 0.5;
 		z = ((float)rand() / RAND_MAX) - 0.5;
-		this->boids[i].SetVelocity(x, y, z);
+		this->boids[i].SetVelocityAndUp(x, y, z);
 	}
 
 	this->gridCube = new GridCube(rendererPtr, GRID_SIDE_LENGTH, 40, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -101,10 +101,6 @@ Boid* Scene::GetAllBoids() {
 }
 
 Boid* Scene::GetAllBoidsPrevious() {
-	Boid* tempHolder = this->boidsPrevious;
-	this->boidsPrevious = this->boids;
-	this->boids = this->boidsPrevious;
-
 	return this->boidsPrevious;
 }
 
@@ -121,6 +117,9 @@ StorageBuffer* Scene::GetBoidBuffer(unsigned int index) const {
 	return this->boidBuffers[index];
 }
 
-void Scene::SetBoidVelocity(unsigned int index, glm::vec3 newVelocity) {
-	this->boids[index].SetVelocity(newVelocity);
+//Functions
+void Scene::SwitchCurrentAndPreviousBoids() {
+	Boid* temp = this->boidsPrevious;
+	this->boidsPrevious = this->boids;
+	this->boids = temp;
 }
