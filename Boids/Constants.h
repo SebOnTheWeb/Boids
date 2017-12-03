@@ -18,7 +18,7 @@ const float			MATCH_FACTOR = 0.125;
 4096
 32768 <--  TODO: NOT IMPLEMENTED/Is it viable?
 */
-const unsigned int NR_OF_BOIDS = 512; //Must be dividable by 8
+const unsigned int NR_OF_BOIDS = 4096; //Must be dividable by 8
 const float BOID_SEPERATION = 3.0f; //Init position seperation
 
 const float GRID_SIDE_LENGTH = 40.0f;
