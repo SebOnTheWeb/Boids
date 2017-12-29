@@ -9,9 +9,9 @@ Scene::Scene(Renderer* rendererPtr) {
 
 	if (NR_OF_BOIDS == 64) {
 		//Plain formation
-		startPos = -(((NR_OF_BOIDS / 10) * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
-		for (int i = 0; i < NR_OF_BOIDS / 10; i++) {
-			for (int j = 0; j < NR_OF_BOIDS / 10; j++) {
+		startPos = -(((NR_OF_BOIDS / 8) * BOID_SEPERATION) / 2) + BOID_SEPERATION / 2;
+		for (int i = 0; i < NR_OF_BOIDS / 8; i++) {
+			for (int j = 0; j < NR_OF_BOIDS / 8; j++) {
 				x = startPos + (BOID_SEPERATION * (float)i);
 				y = 0.0f;
 				z = startPos + (BOID_SEPERATION * (float)j);

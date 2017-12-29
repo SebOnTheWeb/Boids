@@ -236,10 +236,9 @@ void BoidLogicHandler::SingleThreadUpdate(Scene* scene, float deltaTime) {
 }
 
 void BoidLogicHandler::MultiThreadUpdate(Scene* scene, float deltaTime) {
+	scene->SwitchCurrentAndPreviousBoids();
 	const int THREADS = 8;
 	std::thread threadPool[THREADS];
-
-	scene->SwitchCurrentAndPreviousBoids();
 
 	int startIndex = 0;
 	int endIndex = 0;
@@ -284,11 +283,11 @@ void BoidLogicHandler::GPUUpdate(Scene* scene, float deltaTime) {
 	dxContext->CSSetShaderResources(0, 1, srvNullArray);
 	dxContext->CSSetUnorderedAccessViews(0, 1, uavNullArray, 0);
 
-	//Switch buffers for next frame
-	boidBufferSwitchIndex = 1 - boidBufferSwitchIndex;
-
 	//Unset computeshader
 		dxContext->CSSetShader(nullptr,
 		nullptr,
 		0);
+
+	//Switch buffers for next frame
+	boidBufferSwitchIndex = 1 - boidBufferSwitchIndex;
 }
