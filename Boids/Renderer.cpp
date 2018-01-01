@@ -3,7 +3,8 @@
 //Helper functions
 void Renderer::InitD3D11() {
 	//Init
-	UINT createDeviceFlags = D3D11_CREATE_DEVICE_DEBUG; //TODO: Is this right for optimal performance?
+	UINT createDeviceFlags = D3D11_CREATE_DEVICE_SINGLETHREADED; // CHANGE FLAG
+	//UINT createDeviceFlags = D3D11_CREATE_DEVICE_DEBUG;
 	this->dxDevice = nullptr;
 	this->dxDeviceContext = nullptr;
 	this->swapChain = nullptr;

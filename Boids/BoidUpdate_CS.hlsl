@@ -73,7 +73,7 @@ float3 VelocityRule(int currentBoidIndex) {
     return velocity * readBufferConstants[0].MATCH_FACTOR;
 }
 
-float3 LimitSpeed(float3 oldVelocity, float3 newVelocity) {
+float3 LimitSpeed(float3 oldVelocity, float3 newVelocity, float deltaTime) {
     float3 limitedVelocity = newVelocity;
     float newSpeed = length(newVelocity);
     float oldSpeed = length(oldVelocity);
@@ -84,10 +84,10 @@ float3 LimitSpeed(float3 oldVelocity, float3 newVelocity) {
     }
     else {
         if (newSpeed > oldSpeed) {
-            limitedVelocity = normalize(limitedVelocity) * (oldSpeed + readBufferConstants[0].MAX_ACCELERATION);
+            limitedVelocity = normalize(limitedVelocity) * (oldSpeed + (readBufferConstants[0].MAX_ACCELERATION * deltaTime));
         }
         else {
-            limitedVelocity = normalize(limitedVelocity) * (oldSpeed + -readBufferConstants[0].MAX_ACCELERATION);
+            limitedVelocity = normalize(limitedVelocity) * (oldSpeed + -(readBufferConstants[0].MAX_ACCELERATION * deltaTime));
         }
     }
 
@@ -103,8 +103,7 @@ void SetBoidVelocityAndUp(uint index, float3 newVelocity) {
 	writeBufferBoids[index].velocity = newVelocity;
 }
 
-float3 CalculateNewPos(float3 oldPosition, float3 newVelocity) {
-    float deltaTime = readBufferDeltaTime[0];
+float3 CalculateNewPos(float3 oldPosition, float3 newVelocity, float deltaTime) {
     float3 newPos = oldPosition + (newVelocity * deltaTime * readBufferConstants[0].BOID_SPEED);
 
     return newPos;
@@ -166,14 +165,15 @@ void main( uint3 DTid : SV_DispatchThreadID ) {
     newVelocity += centerRuleVec + avoidRuleVec + velocityRuleVec;
 
 	//Limit speed
-    newVelocity = LimitSpeed(previousVelocty, newVelocity);
+    float deltaTime = readBufferDeltaTime[0];
+    newVelocity = LimitSpeed(previousVelocty, newVelocity, deltaTime);
 
 	//Set new boid velocity and up direction
 	SetBoidVelocityAndUp(i, newVelocity);
 
 	//Calculate new boid position
     float3 oldPosition = readBufferBoids[i].position;
-    float3 newPosition = CalculateNewPos(oldPosition, newVelocity);
+    float3 newPosition = CalculateNewPos(oldPosition, newVelocity, deltaTime);
 
     //Move if out of bounds
     newPosition = MoveIfOutOfBounds(newPosition);

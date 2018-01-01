@@ -123,8 +123,8 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 				totalSecondTracker++;
 
 				if (totalSecondTracker >= NR_OF_SEC_TO_MEASURE) {
-					saveToFile(fpsData, dataNrOfElements, "testFps.csv");
-					saveToFile(updateTimeData, dataNrOfElements, "testTime.csv");
+					saveToFile(fpsData, dataNrOfElements, "fps_single_size8_run1.csv");
+					saveToFile(updateTimeData, dataNrOfElements, "update_single_size8_run1.csv");
 					updateLogic = false;
 				}
 			}

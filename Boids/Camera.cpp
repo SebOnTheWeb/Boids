@@ -22,7 +22,12 @@ Camera::Camera() {
 }
 
 Camera::Camera(float fieldOfView, int width, int height) {
-	this->position = glm::vec3(0.0, 1.0, -2.0);
+	glm::vec3 position = glm::vec3(0.0, 1.0, -2.0);
+	Camera(fieldOfView, width, height, position);
+}
+
+Camera::Camera(float fieldOfView, int width, int height, glm::vec3 position) {
+	this->position = position;
 	this->target = glm::vec3(0.0, 0.0, 1.0);
 	this->up = glm::vec3(0.0, 1.0, 0.0);
 	this->right = glm::vec3(1.0, 0.0, 0.0);

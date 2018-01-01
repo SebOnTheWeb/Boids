@@ -5,7 +5,7 @@ const unsigned int	COHESION_THRESHHOLD = 2;
 const float			BOID_SPEED = 1.0f;
 const float			MAX_SPEED = 8.0f;
 const float			MIN_SPEED = 0.5f;
-const float			MAX_ACCELERATION = 0.01f;
+const float			MAX_ACCELERATION = 1.0f;
 
 //Rule factors
 const float			CENTER_FACTOR = 0.02f;
@@ -13,12 +13,12 @@ const float			AVOID_FACTOR = 1.0f;
 const float			MATCH_FACTOR = 0.125;
 
 /* VALID FLOCK SIZES
+8
 64
 512
 4096
-32768 <--  TODO: NOT IMPLEMENTED/Is it viable?
 */
-const unsigned int NR_OF_BOIDS = 8; //Must be dividable by 8
+const unsigned int NR_OF_BOIDS = 512; //Must be dividable by 8
 const float BOID_SEPERATION = 3.0f; //Init position seperation
 
 const float GRID_SIDE_LENGTH = 40.0f;

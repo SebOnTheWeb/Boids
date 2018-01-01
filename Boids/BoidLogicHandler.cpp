@@ -43,7 +43,7 @@ glm::vec3 BoidLogicHandler::VelocityRule(Boid* allBoids, int currentBoidIndex) {
 	return velocity * MATCH_FACTOR;
 }
 
-glm::vec3 BoidLogicHandler::LimitSpeed(glm::vec3 oldVelocity, glm::vec3 newVelocity) {
+glm::vec3 BoidLogicHandler::LimitSpeed(glm::vec3 oldVelocity, glm::vec3 newVelocity, float deltaTime) {
 	glm::vec3 limitedVelocity = newVelocity;
 	float newSpeed = glm::length(newVelocity);
 	float oldSpeed = glm::length(oldVelocity);
@@ -53,10 +53,10 @@ glm::vec3 BoidLogicHandler::LimitSpeed(glm::vec3 oldVelocity, glm::vec3 newVeloc
 	}
 	else {
 		if (newSpeed > oldSpeed) {
-			limitedVelocity = glm::normalize(limitedVelocity) * (oldSpeed + MAX_ACCELERATION);
+			limitedVelocity = glm::normalize(limitedVelocity) * (oldSpeed + (MAX_ACCELERATION * deltaTime));
 		}
 		else {
-			limitedVelocity = glm::normalize(limitedVelocity) * (oldSpeed + -MAX_ACCELERATION);
+			limitedVelocity = glm::normalize(limitedVelocity) * (oldSpeed - (MAX_ACCELERATION * deltaTime));
 		}
 	}
 
@@ -129,7 +129,7 @@ void BoidLogicHandler::BoidThread(Scene* scene, int startIndex, int endIndex, fl
 		newVelocity += centerRuleVec + avoidRuleVec + velocityRuleVec;
 
 		//Limit speed
-		newVelocity = LimitSpeed(previousVelocity, newVelocity);
+		newVelocity = LimitSpeed(previousVelocity, newVelocity, deltaTime);
 
 		//Set new boid velocity and up direction
 		allBoids[i].SetVelocityAndUp(newVelocity);
@@ -216,7 +216,7 @@ void BoidLogicHandler::SingleThreadUpdate(Scene* scene, float deltaTime) {
 		newVelocity += centerRuleVec + avoidRuleVec + velocityRuleVec;
 
 		//Limit speed
-		newVelocity = LimitSpeed(previousVelocity, newVelocity);
+		newVelocity = LimitSpeed(previousVelocity, newVelocity, deltaTime);
 
 		//Set new boid velocity and up direction
 		allBoids[i].SetVelocityAndUp(newVelocity);

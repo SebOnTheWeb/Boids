@@ -75,7 +75,8 @@ Scene::Scene(Renderer* rendererPtr) {
 	}
 
 	this->gridCube = new GridCube(rendererPtr, GRID_SIDE_LENGTH, 40, glm::vec3(0.0f, 0.0f, 0.0f));
-	this->camera = Camera(90.0, rendererPtr->GetWindowWidth(), rendererPtr->GetWindowHeight());
+	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, -(float)(GRID_SIDE_LENGTH / 2));
+	this->camera = Camera(90.0, rendererPtr->GetWindowWidth(), rendererPtr->GetWindowHeight(), cameraPos);
 	this->rendererPtr = rendererPtr;
 	this->boidBuffers[0] = new StorageBuffer(rendererPtr, NR_OF_BOIDS, sizeof(Boid));
 	this->boidBuffers[1] = new StorageBuffer(rendererPtr, NR_OF_BOIDS, sizeof(Boid));

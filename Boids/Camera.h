@@ -26,6 +26,7 @@ public:
 	//Constructors and deconstructors
 	Camera();
 	Camera(float fieldOfView, int width, int height);
+	Camera(float fieldOfView, int width, int height, glm::vec3 position);
 	~Camera();
 
 	//Getters and setters
