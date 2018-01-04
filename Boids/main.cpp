@@ -123,8 +123,8 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 				totalSecondTracker++;
 
 				if (totalSecondTracker >= NR_OF_SEC_TO_MEASURE) {
-					saveToFile(fpsData, dataNrOfElements, "fps_gpgpu_size8_run1.csv");
-					saveToFile(updateTimeData, dataNrOfElements, "update_gpgpu_size8_run1.csv");
+					saveToFile(fpsData, dataNrOfElements, "fps_single_size64_run1.csv");
+					saveToFile(updateTimeData, dataNrOfElements, "update_single_size64_run1.csv");
 					updateLogic = false;
 				}
 			}
@@ -160,7 +160,8 @@ void saveToFile(double* data, int nrOfDataElements, std::string fileName) {
 	file.open(fileName);
 
 	for (int i = 0; i < nrOfDataElements; i++) {
-		file << data[i] << "\n";
+		double convertedToMs = data[i] / 1000000;
+		file << convertedToMs << "\n";
 	}
 
 	file.close();

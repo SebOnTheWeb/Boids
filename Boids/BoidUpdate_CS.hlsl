@@ -146,7 +146,7 @@ float3 MoveIfOutOfBounds(float3 position) {
     return newPosition;
 }
 
-[numthreads(1, 1, 1)] //TODO: 64 numthreads?
+[numthreads(64, 1, 1)]
 void main( uint3 DTid : SV_DispatchThreadID ) {
     int i = DTid.x;
     float3 previousVelocty = readBufferBoids[i].velocity;

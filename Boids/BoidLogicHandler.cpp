@@ -275,7 +275,7 @@ void BoidLogicHandler::GPUUpdate(Scene* scene, float deltaTime) {
 	ID3D11UnorderedAccessView* uavArray[] = { scene->GetBoidBuffer((boidBufferSwitchIndex + 1) % 2)->GetUnorderedAccessView() };
 	dxContext->CSSetShaderResources(0, 3, srvArray);
 	dxContext->CSSetUnorderedAccessViews(0, 1, uavArray, 0);
-	dxContext->Dispatch(NR_OF_BOIDS, 1, 1);
+	dxContext->Dispatch(NR_OF_BOIDS/64, 1, 1);
 
 	//Null resources
 	ID3D11ShaderResourceView* srvNullArray[] = { nullptr };

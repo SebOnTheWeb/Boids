@@ -13,12 +13,11 @@ const float			AVOID_FACTOR = 1.0f;
 const float			MATCH_FACTOR = 0.125;
 
 /* VALID FLOCK SIZES
-8
 64
 512
 4096
 */
-const unsigned int NR_OF_BOIDS = 512; //Must be dividable by 8
+const unsigned int NR_OF_BOIDS = 64; //Must be dividable by 64
 const float BOID_SEPERATION = 3.0f; //Init position seperation
 
 const float GRID_SIDE_LENGTH = 40.0f;
