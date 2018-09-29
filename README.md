@@ -3,7 +3,10 @@
 ## Introduction
 My implementation of boids for my bachelor thesis at Blekinge Institute of Technology. The thesis was based on measuring and comparing a boid simulation running on singe-core CPU, multi-core CPU and GPU.
 The project was built in Visual studio 2017. Rendering was done with DirectX 11 and glm was used for vector fucntionality. \
-I have since refactored the project on my free time to improve my skills in refactoring and clean code.
+Measurements used for the thesis can be found under "Boids/measurements".
+
+I have since refactored the project on my free time to improve my skills in refactoring and clean code. 
+Test were intentionally not added here due to the scope of the project.
 
 
 ![[Initial positions image]](images/Flock64Cube40.jpg?raw=true "Flocksize 64 and grid size 40, initial positions")

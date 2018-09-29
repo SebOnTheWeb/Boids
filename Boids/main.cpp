@@ -13,14 +13,13 @@
 #include "Scene.h"
 #include "BoidLogicHandler.h"
 #include "InputManager.h"
+#include "MeasurementSaving.h"
 
 #pragma comment(lib, "d3d11.lib")
 
 
 HWND CreateShowWindow(int windowWidth, int windowHeight, InputManager* inputManagerPtr);
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-void saveToFile(int* data, int nrOfDataElements, std::string fileName);
-void saveToFile(double* data, int nrOfDataElements, std::string fileName);
 
 INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow) {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -66,7 +65,7 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	double timeBeforeUpdate = 0.0;
 	double timeAfterUpdate = 0.0;
 	double totalUpdateTime = 0.0;
-	double updateTimeData[NR_OF_SEC_TO_MEASURE];
+	double updateTimeDataInMs[NR_OF_SEC_TO_MEASURE];
 
 	// Run the message loop.
 	MSG msg;
@@ -112,7 +111,7 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 			secondTracker += deltaTime;
 			if (secondTracker >= 1.0) { 
 				//Set average time for update this second
-				updateTimeData[dataNrOfElements] = (totalUpdateTime / fpsCounter);
+				updateTimeDataInMs[dataNrOfElements] = (totalUpdateTime / (double)fpsCounter) / 1000000.0f;
 				totalUpdateTime = 0.0;
 
 				//Handle fps data
@@ -123,8 +122,7 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 				totalSecondTracker++;
 
 				if (totalSecondTracker >= NR_OF_SEC_TO_MEASURE) {
-					saveToFile(fpsData, dataNrOfElements, "fps_single_size64_run1.csv");
-					saveToFile(updateTimeData, dataNrOfElements, "update_single_size64_run1.csv");
+					saveMeasurements(fpsData, updateTimeDataInMs, dataNrOfElements);
 					updateLogic = false;
 				}
 			}
@@ -142,29 +140,6 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	inputManager = nullptr;
 
 	return 0;
-}
-
-void saveToFile(int* data, int nrOfDataElements, std::string fileName) {
-	std::ofstream file;
-	file.open(fileName);
-
-	for (int i = 0; i < nrOfDataElements; i++) {
-		file << data[i] << "\n";
-	}
-
-	file.close();
-}
-
-void saveToFile(double* data, int nrOfDataElements, std::string fileName) {
-	std::ofstream file;
-	file.open(fileName);
-
-	for (int i = 0; i < nrOfDataElements; i++) {
-		double convertedToMs = data[i] / 1000000;
-		file << convertedToMs << "\n";
-	}
-
-	file.close();
 }
 
 HWND CreateShowWindow(int windowWidth, int windowHeight, InputManager* inputManagerPtr) {
