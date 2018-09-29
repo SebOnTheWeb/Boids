@@ -1,19 +1,22 @@
 #pragma once
 
 #include <stdexcept>
+#include <time.h>
 #include "Boid.h"
 #include "Camera.h"
 #include "StorageBuffer.h"
+#include "GridCube.h"
+#include "Constants.h"
 
 class Renderer;
 
-const unsigned int NR_OF_BOIDS = 1000;
-
 class Scene {
 private:
-	Boid boids [NR_OF_BOIDS];
+	Boid* boidsPrevious = new Boid[NR_OF_BOIDS];
+	Boid* boids = new Boid[NR_OF_BOIDS];
+	GridCube* gridCube;
 	Camera camera;
-	StorageBuffer* storageBuffers [2];
+	StorageBuffer* boidBuffers[2];
 
 	Renderer* rendererPtr;
 
@@ -24,6 +27,12 @@ public:
 
 	//Getters and setters
 	Boid GetBoid(unsigned int index) const;
-	Camera GetCamera() const;
-	StorageBuffer* GetStorageBuffer(unsigned int index) const;
+	Boid* GetAllBoids();
+	Boid* GetAllBoidsPrevious();
+	GridCube* GetGridCube();
+	Camera* GetCamera();
+	StorageBuffer* GetBoidBuffer(unsigned int index) const;
+
+	//Functions
+	void SwitchCurrentAndPreviousBoids();
 };
