@@ -157,6 +157,7 @@
     <ClCompile Include="GridCube.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Measurements.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="StorageBuffer.cpp" />
@@ -167,7 +168,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GridCube.h" />
-    <ClInclude Include="MeasurementSaving.h" />
+    <ClInclude Include="Measurements.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />

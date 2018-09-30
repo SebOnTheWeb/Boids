@@ -13,7 +13,8 @@
 #include "Scene.h"
 #include "BoidLogicHandler.h"
 #include "InputManager.h"
-#include "MeasurementSaving.h"
+#include "Measurements.h"
+#include "Constants.h"
 
 #pragma comment(lib, "d3d11.lib")
 
@@ -41,6 +42,8 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	Renderer renderer = Renderer(hwnd, windowWidth, windowHeight);
 	Scene scene = Scene(&renderer);
 	BoidLogicHandler boidLogic = BoidLogicHandler(&renderer);
+	Measurements measurements = Measurements(NR_OF_SEC_TO_MEASURE);
+
 
 	//################## Logic init options #######################
 	//boidLogic.InitCPULogic(&scene);
@@ -50,22 +53,15 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	//Init timer
 	double time = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-	const int NR_OF_SEC_TO_MEASURE = 60;
-
-	//Nr of data tracking
-	int dataNrOfElements = 0;
-
 	//Init fps tracking
 	int totalSecondTracker = 0;
 	double secondTracker = 0.0;
 	int fpsCounter = 0;
-	int fpsData[NR_OF_SEC_TO_MEASURE];
 
 	//Init update speed timer
 	double timeBeforeUpdate = 0.0;
 	double timeAfterUpdate = 0.0;
 	double totalUpdateTime = 0.0;
-	double updateTimeDataInMs[NR_OF_SEC_TO_MEASURE];
 
 	// Run the message loop.
 	MSG msg;
@@ -109,20 +105,18 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 			totalUpdateTime += (timeAfterUpdate - timeBeforeUpdate);
 			fpsCounter += 1;
 			secondTracker += deltaTime;
-			if (secondTracker >= 1.0) { 
+			if (secondTracker >= 1.0) {
 				//Set average time for update this second
-				updateTimeDataInMs[dataNrOfElements] = (totalUpdateTime / (double)fpsCounter) / 1000000.0f;
+				double updateTimeInMs = (totalUpdateTime / (double)fpsCounter) / 1000000.0f;
+				measurements.Update(fpsCounter, updateTimeInMs);
+				
 				totalUpdateTime = 0.0;
-
-				//Handle fps data
-				fpsData[dataNrOfElements] = fpsCounter;
-				dataNrOfElements++;
 				fpsCounter = 0;
 				secondTracker = 0.0;
 				totalSecondTracker++;
 
 				if (totalSecondTracker >= NR_OF_SEC_TO_MEASURE) {
-					saveMeasurements(fpsData, updateTimeDataInMs, dataNrOfElements);
+					measurements.SaveCurrentDataToFile();
 					updateLogic = false;
 				}
 			}

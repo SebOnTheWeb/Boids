@@ -22,7 +22,7 @@ const float BOID_SEPERATION = 3.0f; //Init position seperation
 
 const float GRID_SIDE_LENGTH = 40.0f;
 
-
+const int NR_OF_SEC_TO_MEASURE = 60;
 
 
 /*
