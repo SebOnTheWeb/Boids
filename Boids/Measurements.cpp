@@ -2,13 +2,6 @@
 
 #include "Measurements.h"
 
-Measurements::Measurements() {
-	this->fpsData = nullptr;
-	this->updateTimeDataInMs = nullptr;
-	this->maxDataElements = 0;
-	this->nrOfDataElements = 0;
-}
-
 Measurements::Measurements(int maxDataElements) {
 	this->fpsData = new int[maxDataElements];
 	this->updateTimeDataInMs = new double[maxDataElements];

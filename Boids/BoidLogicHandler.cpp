@@ -177,6 +177,12 @@ BoidLogicHandler::BoidLogicHandler(Renderer* rendererPtr) {
 
 BoidLogicHandler::~BoidLogicHandler() {
 	this->computeShader->Release();
+	
+	delete this->constantsBuffer;
+	this->constantsBuffer = nullptr;
+	
+	delete this->deltaTimeBuffer;
+	this->deltaTimeBuffer = nullptr;
 }
 
 //Functions
