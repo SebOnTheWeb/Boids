@@ -14,7 +14,7 @@
 
 #pragma comment(lib, "d3d11.lib")
 
-HWND CreateShowWindow(int windowWidth, int windowHeight, InputManager* inputManagerPtr);
+HWND CreateShowWindow(int windowWidth, int windowHeight);
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow) {
@@ -22,12 +22,8 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 
 	bool isRunning = true;
 
-	//Inited first to get event handler function to window creation
-	InputManager* inputManager = new InputManager(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-	HWND hwnd = CreateShowWindow(WINDOW_WIDTH, WINDOW_HEIGHT, inputManager);
-
-	Simulation simulation = Simulation(inputManager, hwnd);
+	HWND hwnd = CreateShowWindow(WINDOW_WIDTH, WINDOW_HEIGHT);
+	Simulation simulation = Simulation(hwnd);
 
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
@@ -45,13 +41,10 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 		simulation.Update();
 	}	
 
-	delete inputManager;
-	inputManager = nullptr;
-
 	return 0;
 }
 
-HWND CreateShowWindow(int windowWidth, int windowHeight, InputManager* inputManagerPtr) {
+HWND CreateShowWindow(int windowWidth, int windowHeight) {
 	// Register the window class.
 	const wchar_t CLASS_NAME[] = L"Sample Window Class";
 

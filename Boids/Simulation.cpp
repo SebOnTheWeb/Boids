@@ -2,7 +2,7 @@
 
 #include "Simulation.h"
 
-Simulation::Simulation(InputManager* inputManager, HWND hwnd) {
+Simulation::Simulation(HWND hwnd) {
 	this->updateLogic = false;
 	this->deltaTime = 0.0f;
 
@@ -12,6 +12,7 @@ Simulation::Simulation(InputManager* inputManager, HWND hwnd) {
 	this->fpsCounter = 0;
 	this->totalUpdateTimeInMs = 0.0;
 
+	this->inputManager = new InputManager(WINDOW_WIDTH, WINDOW_HEIGHT);
 	this->renderer = new Renderer(hwnd, WINDOW_WIDTH, WINDOW_HEIGHT);
 	this->scene = new Scene(renderer);
 	this->boidLogic = new BoidLogicHandler(renderer);
@@ -19,8 +20,6 @@ Simulation::Simulation(InputManager* inputManager, HWND hwnd) {
 	this->measurements = new Measurements(NR_OF_SEC_TO_MEASURE);
 	this->mainTimer = Timer();
 	this->boidLogicTimer = Timer();
-
-	this->inputManager = inputManager;
 
 	//################## Logic init options #######################
 	//boidLogic.InitCPULogic(&scene);
@@ -31,14 +30,17 @@ Simulation::Simulation(InputManager* inputManager, HWND hwnd) {
 }
 
 Simulation::~Simulation() {
-	delete this->boidLogic;
-	this->boidLogic = nullptr;
-	
-	delete this->scene;
-	this->scene = nullptr;
+	delete this->inputManager;
+	this->inputManager = nullptr;
 
 	delete this->renderer;
 	this->renderer = nullptr;
+
+	delete this->scene;
+	this->scene = nullptr;
+
+	delete this->boidLogic;
+	this->boidLogic = nullptr;
 
 	delete this->measurements;
 	this->measurements = nullptr;

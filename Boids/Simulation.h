@@ -18,6 +18,7 @@ private:
 	int fpsCounter;
 	double totalUpdateTimeInMs;
 
+	InputManager* inputManager;
 	Renderer* renderer;
 	Scene* scene;
 	BoidLogicHandler* boidLogic;
@@ -25,8 +26,6 @@ private:
 	Measurements* measurements;
 	Timer mainTimer;
 	Timer boidLogicTimer;
-
-	InputManager* inputManager;
 
 	void ToggleUpdateLogicIfSpaceWasPressed();
 	void UpdateDeltaTime();
@@ -37,7 +36,7 @@ private:
 	bool IsTestDone();
 
 public:
-	Simulation(InputManager* inputManager, HWND hwnd);
+	Simulation(HWND hwnd);
 	~Simulation();
 
 	void Update();
