@@ -152,6 +152,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Boid.cpp" />
+    <ClCompile Include="BoidLogic.cpp" />
+    <ClCompile Include="BoidLogicCPU.cpp" />
+    <ClCompile Include="BoidLogicCPUSingle.cpp" />
     <ClCompile Include="BoidLogicHandler.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GridCube.cpp" />
@@ -166,6 +169,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Boid.h" />
+    <ClInclude Include="BoidLogic.h" />
+    <ClInclude Include="BoidLogicCPU.h" />
+    <ClInclude Include="BoidLogicCPUSingle.h" />
     <ClInclude Include="BoidLogicHandler.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
