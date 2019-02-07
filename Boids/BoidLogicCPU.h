@@ -13,7 +13,7 @@ protected:
 	static glm::vec3 MoveIfOutOfBounds(glm::vec3 position);
 
 public:
-	BoidLogicCPU(Renderer* rendererPtr, Scene* scenePtr);
+	BoidLogicCPU(Scene* scenePtr);
 	~BoidLogicCPU();
 
 	virtual void Update(Scene* scenePtr, float deltaTime) = 0;

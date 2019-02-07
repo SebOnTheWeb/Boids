@@ -2,7 +2,9 @@
 
 #include "Renderer.h"
 #include "Scene.h"
-#include "BoidLogicHandler.h"
+#include "BoidLogicCPUSingle.h"
+#include "BoidLogicCPUMulti.h"
+#include "BoidLogicGPU.h"
 #include "InputManager.h"
 #include "Measurements.h"
 #include "Timer.h"
@@ -21,7 +23,7 @@ private:
 	InputManager* inputManager;
 	Renderer* renderer;
 	Scene* scene;
-	BoidLogicHandler* boidLogic;
+	BoidLogic* boidLogic;
 
 	Measurements* measurements;
 	Timer mainTimer;

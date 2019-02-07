@@ -107,7 +107,7 @@ glm::vec3 BoidLogicCPU::MoveIfOutOfBounds(glm::vec3 position) {
 	return newPosition;
 }
 
-BoidLogicCPU::BoidLogicCPU(Renderer* rendererPtr, Scene* scenePtr) : BoidLogic(rendererPtr) {
+BoidLogicCPU::BoidLogicCPU(Scene* scenePtr) : BoidLogic() {
 	//This is just to get boid positions into gpu for first frame before logic is started
 	scenePtr->GetBoidBuffer(0)->SetData(scenePtr->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);
 }

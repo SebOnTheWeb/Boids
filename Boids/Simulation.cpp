@@ -15,16 +15,22 @@ Simulation::Simulation(HWND hwnd) {
 	this->inputManager = new InputManager(WINDOW_WIDTH, WINDOW_HEIGHT);
 	this->renderer = new Renderer(hwnd, WINDOW_WIDTH, WINDOW_HEIGHT);
 	this->scene = new Scene(renderer);
-	this->boidLogic = new BoidLogicHandler(renderer);
 
 	this->measurements = new Measurements(NR_OF_SEC_TO_MEASURE);
 	this->mainTimer = Timer();
 	this->boidLogicTimer = Timer();
 
-	//################## Logic init options #######################
-	//boidLogic.InitCPULogic(&scene);
-	boidLogic->InitGPULogic(scene);
-	//#############################################################
+	switch (LOGIC_UPDATE_TYPE) {
+	case SINGLE_CPU: 
+		this->boidLogic = new BoidLogicCPUSingle(this->scene);
+		break;
+	case MULTI_CPU: 
+		this->boidLogic = new BoidLogicCPUMulti(this->scene);
+		break;
+	case GPU: 
+		this->boidLogic = new BoidLogicGPU(this->renderer, this->scene);
+		break;
+	}
 
 	mainTimer.Start();
 }
@@ -54,11 +60,7 @@ void Simulation::Update() {
 
 	if (updateLogic) {
 		boidLogicTimer.Start();
-		//################## Logic update options #####################
-		//boidLogic.SingleThreadUpdate(&scene, deltaTime);
-		//boidLogic.MultiThreadUpdate(&scene, deltaTime);
-		boidLogic->GPUUpdate(scene, deltaTime);
-		//#############################################################
+		boidLogic->Update(scene, deltaTime);
 		boidLogicTimer.Stop();
 
 		UpdateMeasurements();

@@ -7,7 +7,7 @@ private:
 	
 
 public:
-	BoidLogicCPUSingle(Renderer* rendererPtr, Scene* scenePtr);
+	BoidLogicCPUSingle(Scene* scenePtr);
 	~BoidLogicCPUSingle();
 
 	void Update(Scene* scene, float deltaTime);

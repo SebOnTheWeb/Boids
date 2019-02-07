@@ -4,11 +4,8 @@
 #include "Renderer.h"
 
 class BoidLogic {
-private:
-	Renderer* rendererPtr;
-
 public:
-	BoidLogic(Renderer* rendererPtr);
+	BoidLogic();
 	~BoidLogic();
 
 	virtual void Update(Scene* scene, float deltaTime) = 0;

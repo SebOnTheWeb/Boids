@@ -1,23 +1,14 @@
 #pragma once
 
-#include "BoidLogicCPUSingle.h"
+#include "BoidLogicCPUMulti.h"
 
-BoidLogicCPUSingle::BoidLogicCPUSingle(Scene* scenePtr): BoidLogicCPU(scenePtr) {
-
-}
-
-BoidLogicCPUSingle::~BoidLogicCPUSingle() {
-
-}
-
-void BoidLogicCPUSingle::Update(Scene* scene, float deltaTime) {
-	scene->SwitchCurrentAndPreviousBoids();
+void BoidLogicCPUMulti::BoidThread(Scene* scene, int startIndex, int endIndex, float deltaTime) {
 	Boid* allBoidsPrevious = scene->GetAllBoidsPrevious();
 	Boid* allBoids = scene->GetAllBoids();
 	glm::vec3 newVelocity = glm::vec3(0.0, 0.0, 0.0);
 	glm::vec3 previousVelocity = glm::vec3(0.0, 0.0, 0.0);
 
-	for (int i = 0; i < NR_OF_BOIDS; i++) {
+	for (int i = startIndex; i < endIndex; i++) {
 		previousVelocity = allBoidsPrevious[i].GetVelocity();
 		newVelocity = previousVelocity;
 
@@ -48,6 +39,33 @@ void BoidLogicCPUSingle::Update(Scene* scene, float deltaTime) {
 
 		//Set boid new position
 		allBoids[i].SetPosition(newPosition);
+	}
+}
+
+BoidLogicCPUMulti::BoidLogicCPUMulti(Scene* scenePtr) : BoidLogicCPU(scenePtr) {
+
+}
+
+BoidLogicCPUMulti::~BoidLogicCPUMulti() {
+
+}
+
+void BoidLogicCPUMulti::Update(Scene* scene, float deltaTime) {
+	scene->SwitchCurrentAndPreviousBoids();
+	const int THREADS = 8;
+	std::thread threadPool[THREADS];
+
+	int startIndex = 0;
+	int endIndex = 0;
+
+	for (int i = 0; i < THREADS; i++) {
+		startIndex = i * (NR_OF_BOIDS / THREADS);
+		endIndex = (i * (NR_OF_BOIDS / THREADS)) + (NR_OF_BOIDS / THREADS);
+		threadPool[i] = std::thread(BoidThread, scene, startIndex, endIndex, deltaTime);
+	}
+
+	for (auto& th : threadPool) {
+		th.join();
 	}
 
 	scene->GetBoidBuffer(0)->SetData(scene->GetAllBoids(), sizeof(Boid) * NR_OF_BOIDS);

@@ -154,8 +154,9 @@
     <ClCompile Include="Boid.cpp" />
     <ClCompile Include="BoidLogic.cpp" />
     <ClCompile Include="BoidLogicCPU.cpp" />
+    <ClCompile Include="BoidLogicCPUMulti.cpp" />
     <ClCompile Include="BoidLogicCPUSingle.cpp" />
-    <ClCompile Include="BoidLogicHandler.cpp" />
+    <ClCompile Include="BoidLogicGPU.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GridCube.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -171,8 +172,9 @@
     <ClInclude Include="Boid.h" />
     <ClInclude Include="BoidLogic.h" />
     <ClInclude Include="BoidLogicCPU.h" />
+    <ClInclude Include="BoidLogicCPUMulti.h" />
     <ClInclude Include="BoidLogicCPUSingle.h" />
-    <ClInclude Include="BoidLogicHandler.h" />
+    <ClInclude Include="BoidLogicGPU.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GridCube.h" />
