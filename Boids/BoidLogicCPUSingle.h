@@ -4,7 +4,6 @@
 
 class BoidLogicCPUSingle : public BoidLogicCPU {
 private:
-	
 
 public:
 	BoidLogicCPUSingle(Scene* scenePtr);

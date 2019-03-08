@@ -2,6 +2,38 @@
 
 #include "BoidLogicCPU.h"
 
+void BoidLogicCPU::UpdateBoid(Boid* allBoidsPrevious, Boid* allBoids, int currentBoidIndex, float deltaTime) {
+	glm::vec3 newVelocity = glm::vec3(0.0, 0.0, 0.0);
+	glm::vec3 previousVelocity = glm::vec3(0.0, 0.0, 0.0);
+
+	previousVelocity = allBoidsPrevious[currentBoidIndex].GetVelocity();
+	newVelocity = previousVelocity;
+
+	newVelocity += CalculateBaseRulesVelocity(allBoidsPrevious, currentBoidIndex);
+	newVelocity = LimitSpeed(previousVelocity, newVelocity, deltaTime);
+	allBoids[currentBoidIndex].SetVelocityAndUp(newVelocity);
+
+	glm::vec3 oldPosition = allBoidsPrevious[currentBoidIndex].GetPosition();
+	glm::vec3 newPosition = CalculateNewPos(oldPosition, newVelocity, deltaTime);
+
+	newPosition = MoveIfOutOfBounds(newPosition);
+	allBoids[currentBoidIndex].SetPosition(newPosition);
+}
+
+glm::vec3 BoidLogicCPU::CalculateBaseRulesVelocity(Boid* allBoids, int currentBoidIndex) {
+	//1. Fly towards center
+	glm::vec3 centerRuleVec = CenterRule(allBoids, currentBoidIndex);
+
+	//2. Avoid boids
+	glm::vec3 avoidRuleVec = AvoidRule(allBoids, currentBoidIndex);
+
+	//3. Match velocity/direction with all boids
+	glm::vec3 velocityRuleVec = VelocityRule(allBoids, currentBoidIndex);
+
+	//Add all rules
+	return centerRuleVec + avoidRuleVec + velocityRuleVec;
+}
+
 glm::vec3 BoidLogicCPU::CenterRule(Boid* allBoids, int currentBoidIndex) {
 	glm::vec3 center = glm::vec3(0.0, 0.0, 0.0);
 

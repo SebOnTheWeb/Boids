@@ -4,6 +4,11 @@
 
 class BoidLogicCPU : public BoidLogic {
 protected:
+	static void UpdateBoid(Boid* allBoidsPrevious, Boid* allBoids, int currentBoidIndex, float deltaTime);
+
+private:
+	static glm::vec3 CalculateBaseRulesVelocity(Boid* allBoids, int currentBoidIndex);
+
 	static glm::vec3 CenterRule(Boid* allBoids, int currentBoidIndex);
 	static glm::vec3 AvoidRule(Boid* allBoids, int currentBoidIndex);
 	static glm::vec3 VelocityRule(Boid* allBoids, int currentBoidIndex);
