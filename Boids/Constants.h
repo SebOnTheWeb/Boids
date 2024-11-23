@@ -22,8 +22,17 @@ const float BOID_SEPERATION = 3.0f; //Init position seperation
 
 const float GRID_SIDE_LENGTH = 40.0f;
 
+const int WINDOW_WIDTH = 1024;
+const int WINDOW_HEIGHT = 800;
+const int NR_OF_SEC_TO_MEASURE = 60;
 
+enum LogicUpdateType {
+	SINGLE_CPU = 0,
+	MULTI_CPU = 1,
+	GPU = 2
+};
 
+const LogicUpdateType LOGIC_UPDATE_TYPE = GPU;
 
 /*
 This is a bit of a fast and ugly way of not having to use "constants." infront of every constant

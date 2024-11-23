@@ -152,25 +152,39 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Boid.cpp" />
-    <ClCompile Include="BoidLogicHandler.cpp" />
+    <ClCompile Include="BoidLogic.cpp" />
+    <ClCompile Include="BoidLogicCPU.cpp" />
+    <ClCompile Include="BoidLogicCPUMulti.cpp" />
+    <ClCompile Include="BoidLogicCPUSingle.cpp" />
+    <ClCompile Include="BoidLogicGPU.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GridCube.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Measurements.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="StorageBuffer.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Boid.h" />
-    <ClInclude Include="BoidLogicHandler.h" />
+    <ClInclude Include="BoidLogic.h" />
+    <ClInclude Include="BoidLogicCPU.h" />
+    <ClInclude Include="BoidLogicCPUMulti.h" />
+    <ClInclude Include="BoidLogicCPUSingle.h" />
+    <ClInclude Include="BoidLogicGPU.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GridCube.h" />
+    <ClInclude Include="Measurements.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Simulation.h" />
     <ClInclude Include="StorageBuffer.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BoidUpdate_CS.hlsl">
